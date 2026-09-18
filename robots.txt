@@ -1,5 +1,5 @@
 # The Dark Web Brief — an evidence-based investigation
-# https://scartheseller72-max.github.io/dark-web-brief/
+# https://luciftias.github.io/dark-web-brief/
 
 User-agent: *
 Allow: /

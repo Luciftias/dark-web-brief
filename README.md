@@ -10,7 +10,7 @@ An in-depth, single-page HTML investigative brief covering the dark web's archit
 
 ## Live Environment
 
-A live deployment of this investigation can be accessed at: [ScartheSeller72 Max - Dark Web Brief](https://scartheseller72-max.github.io/dark-web-brief/)
+A live deployment of this investigation can be accessed at: [Dark Web Brief](https://luciftias.github.io/dark-web-brief/)
 
 ## Table of Contents
 

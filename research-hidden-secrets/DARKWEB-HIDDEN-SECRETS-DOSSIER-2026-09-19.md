@@ -1,5 +1,5 @@
 # THE HIDDEN SECRETS LAYER — Research Dossier
-### For: "THE DARK WEB — An Evidence-Based Technical Investigation" (scartheseller72-max.github.io/dark-web-brief/)
+### For: "THE DARK WEB — An Evidence-Based Technical Investigation" (luciftias.github.io/dark-web-brief/ — formerly scartheseller72-max.github.io/dark-web-brief/)
 ### Date: 2026-09-19 · Status: build-ready research · Labels: `LOGGED FACT` / `LEGEND` / `CORRECTION`
 
 How to read this file: Sections A–D are the research bank. Section E is the shipped-product catalog (30 payloads + 3 unlock chains + Chapter 13 spec). Sections F–G are guardrails and code architecture. Every factual claim carries a URL. Anything labeled LEGEND is presented as folklore and must be labeled as such in the UI. Anything labeled CORRECTION fixes an error common in secondary sources — use it to strengthen the site's myth-busting brand.
