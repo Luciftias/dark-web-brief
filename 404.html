@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Down for Maintenance</title>
+<style>
+  :root {
+    --bg: #030305; --surface: #0a0a0f; --border: rgba(255,255,255,0.08);
+    --text: rgba(255,255,255,0.95); --text-secondary: rgba(255,255,255,0.65);
+    --text-tertiary: rgba(255,255,255,0.4); --accent: #5e6ad2; --cyan: #06b6d4;
+    --green: #10b981; --red: #f43f5e; --amber: #f59e0b;
+    --mono: 'JetBrains Mono', 'SF Mono', ui-monospace, Consolas, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg); color: var(--text); min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    display: flex; align-items: center; justify-content: center; padding: 32px;
+    line-height: 1.7;
+  }
+  .card {
+    width: min(620px, 100%); background: var(--surface);
+    border: 1px solid var(--border); border-radius: 16px; padding: 44px 48px;
+    position: relative; overflow: hidden;
+  }
+  .mono { font-family: var(--mono); }
+  .tag {
+    display: inline-block; font-family: var(--mono); font-size: 9.5px;
+    letter-spacing: 2px; padding: 4px 10px; border-radius: 4px; margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+  .tag.maintenance { background: rgba(244,63,94,0.08); color: var(--red); border: 1px solid rgba(244,63,94,0.3); }
+  .tag.art { background: rgba(245,158,11,0.08); color: var(--amber); border: 1px solid rgba(245,158,11,0.3); }
+  h1 { font-size: 25px; font-weight: 650; letter-spacing: -0.6px; margin-bottom: 14px; line-height: 1.25; }
+  p { font-size: 13.5px; color: var(--text-secondary); margin-bottom: 14px; }
+  p strong { color: var(--text); font-weight: 500; }
+  .muted { color: var(--text-tertiary); font-size: 12px; }
+  a.src { color: var(--accent); text-decoration: none; border-bottom: 1px dotted rgba(94,106,210,0.4); font-family: var(--mono); font-size: 11px; margin-right: 14px; }
+  a.src:hover { color: var(--cyan); }
+  .btn {
+    display: inline-block; margin-top: 18px; background: var(--accent); color: #fff;
+    text-decoration: none; border-radius: 8px; padding: 11px 20px; font-size: 13px; font-weight: 500;
+    border: none; cursor: pointer; font-family: inherit;
+  }
+  .btn:hover { background: #4a55b3; }
+  #explain { display: none; }
+  .flip .maint-only { display: none; }
+  .flip #explain { display: block; }
+  .pulse { animation: pulse 1.6s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { opacity: .55 } 50% { opacity: 1 } }
+  @media (prefers-reduced-motion: reduce) { .pulse { animation: none; opacity: .85; } }
+  @media (max-width: 560px) { .card { padding: 32px 24px; } }
+</style>
+</head>
+<body>
+<div class="card" id="card">
+  <div class="maint-only">
+    <span class="tag maintenance">Down for Maintenance</span>
+    <h1>This service is temporarily unavailable.</h1>
+    <p>Please check back later. We apologize for the inconvenience.</p>
+    <p class="muted mono pulse">ref: 2013-08-04 / maintenance</p>
+  </div>
+  <div id="explain">
+    <span class="tag art">ART · RECONSTRUCTION</span>
+    <h1>This page is a reconstruction.</h1>
+    <p>On <strong>August 4, 2013</strong>, every site hosted by Freedom Hosting served a maintenance page almost exactly like the one you just saw. The page was not maintenance. It was a browser exploit — <strong>CVE-2013-1680</strong>, a use-after-free in Firefox 17 ESR — and it beaconed visitors' real IP addresses to a server in Virginia.</p>
+    <p>The codename, from leaked training material: <strong>EgotisticalGiraffe</strong>. Tor was not broken. The browser was. Its operator, Eric Eoin Marques, was sentenced to 27 years in 2021.</p>
+    <p><strong>What this teaches:</strong> a fake maintenance notice is one of the oldest tricks in the record — and every broken URL on this site rebuilds one, labeled as art, because a museum and a trap should look different.</p>
+    <p style="margin-top:18px">
+      <a class="src" href="https://nvd.nist.gov/vuln/detail/CVE-2013-1680" target="_blank" rel="noopener noreferrer">CVE-2013-1680 ↗</a>
+      <a class="src" href="https://arstechnica.com/tech-policy/2013/09/fbi-admits-what-we-all-suspected-it-compromised-freedom-hostings-tor-servers" target="_blank" rel="noopener noreferrer">Ars Technica ↗</a>
+      <a class="src" href="https://www.justice.gov/usao-md/pr/dark-web-child-pornography-facilitator-sentenced-27-years-federal-prison-conspiracy" target="_blank" rel="noopener noreferrer">DOJ ↗</a>
+    </p>
+    <p class="muted" id="frag" style="margin-top:10px"></p>
+    <a class="btn" id="home" href="/">Return to the record</a>
+  </div>
+</div>
+<script>
+(function () {
+  "use strict";
+  /* record the fragment when the flip completes (E07) */
+  var flipped = false;
+  function flip() {
+    if (flipped) return;
+    flipped = true;
+    document.getElementById("card").classList.add("flip");
+    var recorded = false;
+    try {
+      var s = JSON.parse(localStorage.getItem("sauron.state.v1")) || {};
+      s.found = s.found || [];
+      s.keys = s.keys || [];
+      s.flags = s.flags || {};
+      if (s.found.indexOf("E07") === -1) {
+        s.found.push("E07");
+        localStorage.setItem("sauron.state.v1", JSON.stringify(s));
+        recorded = true;
+      }
+    } catch (e) {}
+    document.getElementById("frag").textContent = recorded
+      ? "Fragment E07 recorded — return to the record; the counter will know you."
+      : "Fragment E07 was already in your record. The counter remembers.";
+  }
+  setTimeout(flip, 3200);
+  document.getElementById("card").addEventListener("click", function (e) {
+    if (!flipped && e.target.tagName !== "A") flip();
+  });
+  document.addEventListener("keydown", function (e) {
+    if (!flipped && (e.key === "Enter" || e.key === " ")) flip();
+  });
+
+  /* home link works on project pages and custom domains alike */
+  try {
+    var h = location.hostname;
+    if (/\.github\.io$/i.test(h)) {
+      var seg = location.pathname.split("/")[1] || "";
+      document.getElementById("home").setAttribute("href", "/" + (seg ? seg + "/" : ""));
+    } else {
+      document.getElementById("home").setAttribute("href", "/");
+    }
+  } catch (e) {}
+})();
+</script>
+</body>
+</html>

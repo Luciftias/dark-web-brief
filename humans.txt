@@ -1,0 +1,16 @@
+/* THE DARK WEB BRIEF */
+/* An evidence-based investigation, in one file. */
+
+SITE:      https://scartheseller72-max.github.io/dark-web-brief/
+TYPE:      Educational reference — single-page brief
+VERSION:   secrets v1.0 (hidden layer)
+
+TEAM:      The record itself.
+CONTACT:   https://github.com/scartheseller72-max/dark-web-brief/issues
+
+/* TEAM: the people who lost their freedom so this page could be footnoted */
+/* SOURCES: court filings, DOJ releases, academic papers, and reporting — cited inline. */
+/* ETHICS: no market links, no operational content, no scareware. A museum, not a trap. */
+
+NOTES:     The page keeps a hidden layer of documented secrets.
+           The disclosed list lives in the record itself: /#secrets

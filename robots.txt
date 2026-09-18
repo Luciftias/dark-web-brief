@@ -1,0 +1,11 @@
+# The Dark Web Brief — an evidence-based investigation
+# https://scartheseller72-max.github.io/dark-web-brief/
+
+User-agent: *
+Allow: /
+
+# Curators' note: crawlers may index the record; humans may read its edges.
+# Door 2 is where the CAPTCHA used to be.
+#
+# One line below is encoded for readers, not for robots (ROT13):
+# Gur zbfg frpher cneg bs gur vagrearg vf gur cneg lbh hcybnq lbhefrys

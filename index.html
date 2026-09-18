@@ -647,6 +647,220 @@
     .pull { padding: 20px 0 20px 24px; }
     .hero-stats .hs-item { padding: 4px 10px; font-size: 10px; }
   }
+  /* ══════════════════════════════════════════════════════
+     HIDDEN LAYER — SAURON v1.0
+     Every mechanism is keyboard-accessible; motion honors
+     prefers-reduced-motion. Facts carry sources; folklore
+     carries labels. Type sauron.help() in the console.
+     ══════════════════════════════════════════════════════ */
+  [hidden] { display: none !important; }
+
+  /* concealed ledger text (E05) */
+  .whiteout { color: transparent; user-select: text; transition: color .25s var(--ease); }
+  .whiteout::selection { color: var(--text); background: rgba(94,106,210,.4); }
+  .whiteout.revealed { color: var(--text); }
+
+  .reveal-btn {
+    background: none; border: 1px solid var(--border); border-radius: 100px;
+    color: var(--text-tertiary); font-family: var(--mono); font-size: 9.5px;
+    letter-spacing: 1.4px; text-transform: uppercase; padding: 4px 12px;
+    margin-left: 10px; cursor: pointer; vertical-align: middle;
+    transition: color .2s var(--ease), border-color .2s var(--ease), box-shadow .2s var(--ease);
+  }
+  .reveal-btn:hover { color: var(--accent); border-color: var(--accent-dim); box-shadow: 0 0 14px var(--accent-glow); }
+
+  .ledger-strip { display: flex; flex-wrap: wrap; gap: 8px; margin: -8px 0 32px; }
+  .ledger-strip .ls-item {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 10px 16px; font-family: var(--mono); font-size: 11px; color: var(--text-secondary);
+  }
+  .ledger-strip .ls-item b { color: var(--accent); font-weight: 600; }
+
+  .zw { font-size: 0; line-height: 0; }
+
+  /* toast */
+  #s-toast {
+    position: fixed; left: 50%; bottom: 28px; transform: translate(-50%, 14px); z-index: 400;
+    max-width: min(560px, 92vw); background: rgba(10,10,15,.97); border: 1px solid var(--border-hover);
+    border-radius: 10px; padding: 12px 18px; font-size: 12.5px; color: var(--text-secondary);
+    font-family: var(--mono); letter-spacing: .2px; line-height: 1.55;
+    opacity: 0; visibility: hidden; backdrop-filter: blur(16px); box-shadow: 0 16px 48px rgba(0,0,0,.5);
+    transition: opacity .3s var(--ease), transform .3s var(--ease), visibility .3s;
+  }
+  #s-toast[data-on="1"] { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
+  #s-toast b { color: var(--accent); font-weight: 600; }
+
+  /* fragment HUD */
+  #s-hud {
+    position: fixed; left: 36px; bottom: 36px; z-index: 99;
+    display: flex; align-items: center; gap: 9px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 100px;
+    padding: 9px 16px; color: var(--text-secondary); font-family: var(--mono);
+    font-size: 11px; letter-spacing: 1.4px; cursor: pointer;
+    opacity: 0; visibility: hidden; backdrop-filter: blur(12px);
+    transition: opacity .35s var(--ease), visibility .35s, border-color .2s, box-shadow .2s, color .2s;
+  }
+  #s-hud.visible { opacity: 1; visibility: visible; }
+  #s-hud:hover { border-color: var(--accent-dim); color: var(--text); box-shadow: 0 0 20px var(--accent-glow); }
+  #s-hud .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+  #s-hud .keys { color: var(--green); }
+
+  /* overlays */
+  .s-overlay {
+    position: fixed; inset: 0; z-index: 300; display: flex; justify-content: center;
+    background: rgba(3,3,5,.74); backdrop-filter: blur(6px);
+    opacity: 0; transition: opacity .25s var(--ease);
+  }
+  .s-overlay.drawer { align-items: flex-end; }
+  .s-overlay.full { align-items: center; padding: 32px 20px; }
+  .s-overlay.open { opacity: 1; }
+  .s-overlay .s-panel {
+    position: relative; background: var(--surface); border: 1px solid var(--border);
+    transform: translateY(24px) scale(.995); transition: transform .3s var(--ease);
+    box-shadow: 0 -24px 80px rgba(0,0,0,.5); outline: none;
+  }
+  .s-overlay.drawer .s-panel { width: min(780px, 100%); max-height: 86vh; overflow: auto; border-radius: 18px 18px 0 0; border-bottom: none; padding: 40px 44px 52px; }
+  .s-overlay.full .s-panel { width: min(980px, 100%); max-height: 88vh; overflow: auto; border-radius: 16px; padding: 44px 48px 56px; box-shadow: 0 32px 120px rgba(0,0,0,.6); }
+  .s-overlay.open .s-panel { transform: translateY(0) scale(1); }
+  @media (max-width: 700px) {
+    .s-overlay.drawer .s-panel { padding: 32px 24px 44px; }
+    .s-overlay.full .s-panel { padding: 32px 24px 44px; }
+    .s-overlay.full { padding: 16px 10px; }
+  }
+  .s-close {
+    position: absolute; top: 14px; right: 16px; z-index: 2;
+    background: none; border: none; color: var(--text-tertiary); font-size: 15px;
+    cursor: pointer; padding: 9px; border-radius: 8px; line-height: 1;
+    transition: color .2s, background .2s;
+  }
+  .s-close:hover { color: var(--text); background: rgba(255,255,255,.06); }
+
+  /* exhibit typography */
+  .s-kicker { font-family: var(--mono); font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent-dim); margin-bottom: 12px; }
+  .s-title { font-size: 21px; font-weight: 600; letter-spacing: -.5px; margin: 0 0 16px; line-height: 1.3; padding-right: 30px; }
+  .s-p { font-size: 13.5px; color: var(--text-secondary); line-height: 1.75; margin-bottom: 14px; }
+  .s-p strong, .s-p b { color: var(--text); font-weight: 500; }
+  .s-p code { font-family: var(--mono); font-size: 12px; background: var(--accent-glow); padding: 1px 7px; border-radius: 4px; color: var(--accent); }
+  .s-quote { border-left: 2px solid var(--accent-dim); padding: 2px 0 2px 16px; margin: 18px 0; font-style: italic; color: var(--text); font-size: 14px; line-height: 1.7; }
+  .s-quote .ref { display: block; font-style: normal; font-family: var(--mono); font-size: 10px; color: var(--text-tertiary); margin-top: 8px; letter-spacing: .4px; }
+  .s-src { display: inline-block; font-family: var(--mono); font-size: 10.5px; color: var(--accent); text-decoration: none; border-bottom: 1px dotted rgba(94,106,210,.4); margin: 2px 14px 2px 0; padding-bottom: 1px; }
+  .s-src:hover { color: var(--cyan); border-color: rgba(6,182,212,.4); }
+  .s-chip { display: inline-block; font-family: var(--mono); font-size: 9px; letter-spacing: 1.2px; padding: 3px 9px; border-radius: 4px; margin: 0 8px 8px 0; text-transform: uppercase; }
+  .s-chip.fact { background: rgba(16,185,129,.08); color: var(--green); }
+  .s-chip.art { background: rgba(245,158,11,.08); color: var(--amber); }
+  .s-chip.legend { background: rgba(244,63,94,.08); color: var(--red); }
+  .s-chip.meta { background: rgba(6,182,212,.08); color: var(--cyan); }
+  .s-chip.home { background: rgba(94,106,210,.1); color: var(--accent); }
+  .s-code { font-family: var(--mono); font-size: 11.5px; background: #060609; border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; color: var(--cyan); overflow-x: auto; white-space: pre-wrap; word-break: break-word; margin: 16px 0; line-height: 1.7; }
+  .s-list { list-style: none; margin: 10px 0 16px; }
+  .s-list li { padding-left: 18px; position: relative; font-size: 13.5px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 8px; }
+  .s-list li::before { content: '›'; position: absolute; left: 2px; color: var(--accent); }
+  .s-list li b { color: var(--text); font-weight: 500; }
+  .s-btn { display: inline-block; background: var(--accent); color: #fff; border: none; border-radius: 8px; font-family: var(--font); font-size: 12.5px; font-weight: 500; padding: 10px 18px; cursor: pointer; text-decoration: none; transition: all .2s var(--ease); margin: 6px 10px 6px 0; }
+  .s-btn:hover { background: var(--accent-dim); box-shadow: 0 0 24px var(--accent-glow); }
+  .s-btn.ghost { background: transparent; border: 1px solid var(--border-hover); color: var(--text-secondary); }
+  .s-btn.ghost:hover { color: var(--text); border-color: var(--accent-dim); box-shadow: none; }
+  .s-note { background: rgba(94,106,210,.05); border: 1px solid rgba(94,106,210,.12); border-radius: 10px; padding: 16px 18px; margin: 16px 0; font-size: 12.5px; color: var(--text-secondary); line-height: 1.7; }
+  .s-note b { color: var(--accent); font-weight: 500; }
+
+  /* onion peel animation (E04) */
+  .peel { position: relative; height: 130px; margin: 6px 0 18px; }
+  .peel span { position: absolute; left: 50%; top: 50%; border: 1.5px solid var(--accent); border-radius: 50%; transform: translate(-50%,-50%); opacity: 0; animation: peel 3.2s var(--ease) infinite; }
+  .peel span:nth-child(1) { width: 24px; height: 24px; }
+  .peel span:nth-child(2) { width: 24px; height: 24px; animation-delay: .55s; border-color: var(--cyan); }
+  .peel span:nth-child(3) { width: 24px; height: 24px; animation-delay: 1.1s; border-color: var(--green); }
+  @keyframes peel {
+    0% { opacity: 0; width: 20px; height: 20px; }
+    12% { opacity: .9; }
+    75% { opacity: .25; }
+    100% { opacity: 0; width: 150px; height: 150px; }
+  }
+
+  /* classified strip (E14) */
+  #s-classified {
+    position: fixed; top: 64px; left: 0; right: 0; z-index: 160;
+    width: 100%; border: none; padding: 0;
+    background: rgba(10,10,15,.97); border-bottom: 1px solid rgba(244,63,94,.28);
+    backdrop-filter: blur(20px); transform: translateY(-102%);
+    transition: transform .45s var(--ease);
+  }
+  #s-classified.on { transform: translateY(0); }
+  #s-classified .sc-inner { max-width: 960px; margin: 0 auto; padding: 14px 40px; display: flex; align-items: center; gap: 14px; cursor: pointer; text-align: left; width: 100%; background: none; border: none; }
+  #s-classified .sc-tag { font-family: var(--mono); font-size: 9px; letter-spacing: 2px; color: var(--red); border: 1px solid rgba(244,63,94,.35); padding: 3px 8px; border-radius: 4px; flex-shrink: 0; }
+  #s-classified .sc-msg { font-size: 12.5px; color: var(--text-secondary); line-height: 1.5; }
+  #s-classified .sc-msg b { color: var(--text); font-weight: 500; }
+  @media (max-width: 700px) { #s-classified .sc-inner { padding: 12px 20px; } }
+
+  /* onion rain canvas (E03) */
+  #s-rain { position: fixed; inset: 0; z-index: 250; pointer-events: none; opacity: 0; transition: opacity .4s var(--ease); }
+  #s-rain.on { opacity: 1; }
+
+  /* quiz (E26) */
+  .s-quiz .q-block { margin: 20px 0; }
+  .s-quiz .q-text { font-size: 13.5px; color: var(--text); margin-bottom: 10px; font-weight: 500; line-height: 1.6; }
+  .s-quiz .q-opt { display: block; width: 100%; text-align: left; background: var(--surface-hover); border: 1px solid var(--border); border-radius: 8px; color: var(--text-secondary); font-size: 12.5px; padding: 10px 14px; margin-bottom: 6px; cursor: pointer; transition: border-color .18s var(--ease), color .18s var(--ease); font-family: var(--font); line-height: 1.5; }
+  .s-quiz .q-opt:hover { border-color: var(--accent-dim); }
+  .s-quiz .q-opt.ok { border-color: rgba(16,185,129,.5); color: var(--green); }
+  .s-quiz .q-opt.no { border-color: rgba(244,63,94,.45); color: var(--red); opacity: .65; }
+  .s-quiz .q-fb { font-size: 12px; color: var(--text-tertiary); line-height: 1.65; margin-top: 6px; display: none; }
+  .s-quiz .q-fb.show { display: block; }
+  .s-quiz .q-fb b { color: var(--text); font-weight: 500; }
+
+  /* ledger terminal (E15) */
+  .s-term { background: #060609; border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; font-family: var(--mono); font-size: 12px; margin: 16px 0; }
+  .s-term .t-out { color: var(--text-secondary); line-height: 1.9; min-height: 66px; white-space: pre-wrap; }
+  .s-term .t-out .ok { color: var(--green); }
+  .s-term .t-out .warn { color: var(--amber); }
+  .s-term .t-row { display: flex; gap: 8px; margin-top: 12px; align-items: center; border-top: 1px solid rgba(255,255,255,.05); padding-top: 12px; }
+  .s-term .t-row span { color: var(--green); }
+  .s-term input { flex: 1; background: transparent; border: none; outline: none; color: var(--text); font-family: var(--mono); font-size: 12px; caret-color: var(--accent); }
+  .s-term .t-hint { color: var(--text-tertiary); font-size: 10.5px; margin-top: 10px; letter-spacing: .3px; }
+
+  /* spectrogram (E16) */
+  .s-spec canvas { width: 100%; height: auto; border-radius: 10px; border: 1px solid var(--border); background: #05050a; display: block; margin: 16px 0; }
+
+  /* rendezvous section (E21) */
+  #rv .rv-svg { width: 100%; max-width: 640px; height: auto; display: block; margin: 32px 0; }
+  #rv .rv-svg text { font-family: var(--mono); font-size: 10px; fill: var(--text-tertiary); }
+  #rv .rv-svg .node { fill: var(--bg); stroke-width: 1.5; }
+
+  /* vault + meta */
+  .s-vault .v-ex { border-top: 1px solid var(--border); padding: 24px 0 8px; margin-top: 8px; }
+  .s-vault .v-num { font-family: var(--mono); font-size: 10px; color: var(--accent-dim); letter-spacing: 2.5px; }
+  .s-vault .v-h { font-size: 16px; font-weight: 600; letter-spacing: -.3px; margin: 8px 0 10px; }
+  .s-vault .v-teach { font-size: 12px; color: var(--cyan); margin: 12px 0 8px; line-height: 1.6; }
+  .s-ascii { font-family: var(--mono); font-size: clamp(5px, 1.35vw, 10px); line-height: 1.3; color: var(--accent); white-space: pre; overflow-x: auto; margin: 22px 0 10px; }
+  .s-sinhala { font-size: 16px; color: var(--text); text-align: center; margin: 34px 0 8px; letter-spacing: .4px; }
+  .s-sinhala-en { font-size: 10.5px; color: var(--text-tertiary); text-align: center; font-family: var(--mono); letter-spacing: 1.4px; margin-bottom: 30px; text-transform: uppercase; }
+  .meta-row { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,.04); font-size: 12.5px; }
+  .meta-row .mi { font-family: var(--mono); font-size: 10.5px; color: var(--text-tertiary); flex-shrink: 0; width: 48px; padding-top: 2px; }
+  .meta-row .mt { color: var(--text-secondary); line-height: 1.65; }
+  .meta-row .mt b { color: var(--text); font-weight: 500; }
+  .meta-row.found .mi { color: var(--green); }
+
+  /* chains (HUD panel) */
+  .chain { margin: 16px 0; }
+  .chain .cl-name { font-size: 12.5px; color: var(--text); margin-bottom: 8px; font-weight: 500; }
+  .chain .cl-name span { color: var(--text-tertiary); font-weight: 400; }
+  .chain .cl-links { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chain .cl-link { font-family: var(--mono); font-size: 9.5px; padding: 4px 9px; border-radius: 4px; background: rgba(255,255,255,.04); color: var(--text-tertiary); border: 1px solid transparent; }
+  .chain .cl-link.found { color: var(--green); border-color: rgba(16,185,129,.25); background: rgba(16,185,129,.05); }
+
+  .e12-tick { color: var(--amber); font-size: 10px; margin-left: 8px; letter-spacing: 1px; }
+
+  @media (max-width: 900px) {
+    #s-hud { left: 24px; bottom: 24px; padding: 7px 13px; font-size: 10px; }
+    #s-toast { bottom: 84px; }
+  }
+
+  /* reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    #s-rain { display: none; }
+    .peel span { animation: none; opacity: .5; width: 90px; height: 90px; }
+    .peel span:nth-child(2) { width: 60px; height: 60px; }
+    .peel span:nth-child(3) { width: 30px; height: 30px; }
+    .s-overlay, .s-overlay .s-panel, #s-toast, #s-classified, #s-hud { transition-duration: .001s !important; }
+  }
 </style>
 </head>
 <body>
@@ -674,6 +888,7 @@
 </nav>
 
 <section class="hero">
+  <!-- FROSTY WAS HERE. In 2013 he asked the internet for help with his own marketplace — under his real name, one minute before he changed it. Viewing this page's source is a way of reading. The console keeps the rest. -->
   <div class="wrap">
     <div>
       <div class="sec-label" style="margin-bottom:16px;">Investigative Brief &bull; 2026</div>
@@ -757,6 +972,40 @@
         <p>For .onion sites, the client builds 3 hops to a rendezvous point; the service builds 3 separate hops to the same point. Neither learns the other&rsquo;s IP address. All V3 onions use ed25519 keys.</p>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- 2b: Rendezvous (hidden route — E21) -->
+<section id="rv" hidden>
+  <div class="wrap">
+    <div class="sec-label">02b &mdash; Rendezvous</div>
+    <h2 class="sec-h">Where Two Strangers <span class="highlight">Meet</span></h2>
+    <p class="sec-p wide">A hidden service cannot tell clients where it is, and clients cannot tell the service where they are. The problem of the first meeting is solved by a third point both sides reach separately: the rendezvous point. Each side builds three hops to it, so neither ever learns the other&rsquo;s address.</p>
+    <svg class="rv-svg" viewBox="0 0 640 190" role="img" aria-label="A client builds three hops to a rendezvous point; the hidden service builds three separate hops to the same point.">
+      <circle class="node" cx="70" cy="95" r="16" stroke="#ffffff"/>
+      <text x="70" y="148" text-anchor="middle">client</text>
+      <circle class="node" cx="185" cy="45" r="11" stroke="#10b981"/>
+      <circle class="node" cx="185" cy="145" r="11" stroke="#10b981"/>
+      <path d="M86 88 L174 50" stroke="#10b981" stroke-width="1" fill="none" opacity="0.6"/>
+      <path d="M86 102 L174 138" stroke="#10b981" stroke-width="1" fill="none" opacity="0.6"/>
+      <circle class="node" cx="320" cy="95" r="20" stroke="#5e6ad2"/>
+      <text x="320" y="152" text-anchor="middle" fill="#5e6ad2">rendezvous point</text>
+      <path d="M196 45 L300 87" stroke="#10b981" stroke-width="1" fill="none" opacity="0.6"/>
+      <path d="M196 145 L300 103" stroke="#10b981" stroke-width="1" fill="none" opacity="0.6"/>
+      <circle class="node" cx="455" cy="45" r="11" stroke="#06b6d4"/>
+      <circle class="node" cx="455" cy="145" r="11" stroke="#06b6d4"/>
+      <path d="M340 87 L444 50" stroke="#06b6d4" stroke-width="1" fill="none" opacity="0.6"/>
+      <path d="M340 103 L444 138" stroke="#06b6d4" stroke-width="1" fill="none" opacity="0.6"/>
+      <circle class="node" cx="570" cy="95" r="16" stroke="#06b6d4"/>
+      <text x="570" y="148" text-anchor="middle">hidden service</text>
+      <path d="M466 50 L554 88" stroke="#06b6d4" stroke-width="1" fill="none" opacity="0.6"/>
+      <path d="M466 138 L554 102" stroke="#06b6d4" stroke-width="1" fill="none" opacity="0.6"/>
+    </svg>
+    <div class="pull">
+      <p>No single relay knows both ends. The meeting point is the only shared fact.</p>
+      <div class="ref">Tor design paper, USENIX 2004 &mdash; &ldquo;practical design for location-hidden services via rendezvous points&rdquo;</div>
+    </div>
+    <p class="sec-p wide" style="font-size:13px;color:var(--text-tertiary);">This section is not in the navigation. It is reached by its own name: <code>#rv</code> &mdash; or from the console: <code>sauron.route('rv')</code>.</p>
   </div>
 </section>
 
@@ -939,7 +1188,7 @@
   <div class="wrap">
     <div class="sec-label">07 &mdash; How They Get Caught</div>
     <h2 class="sec-h">Operational Security <span class="highlight">Failures</span></h2>
-    <p class="sec-p wide">The defining finding from two decades of dark web investigations: <strong>over 80% of major busts result from operational mistakes, not cryptographic breaks of Tor.</strong> Human error and infrastructure misconfiguration provide the attack surface.</p>
+    <p class="sec-p wide">The defining finding from two decades of dark web investigations: <strong>over 80% of major busts result from operational mistakes, not cryptographic breaks of Tor.</strong> Human error and infrastructure misconfiguration provide the attack surface.<span id="e13-carrier" class="zw" aria-hidden="true"></span></p>
 
     <div class="card-grid">
       <div class="card">
@@ -976,6 +1225,13 @@
     <div class="sec-label">08 &mdash; Financial Tracing</div>
     <h2 class="sec-h">Cryptocurrency <span class="highlight">Forensics</span></h2>
     <p class="sec-p wide">Bitcoin&rsquo;s public ledger enables sophisticated forensic clustering. Modern tools can link approximately <code>60%</code> of all Bitcoin transactions to known entities using common-spend heuristics, change-address detection, and temporal pattern matching.</p>
+
+    <p class="sec-p wide">The Silk Road evidence lived inside one seized laptop. Its balance sheet told the case&rsquo;s next chapter &mdash; <span class="whiteout" id="e05-span">144,336. $48,238,116 in 2017. Then $1,000,000,000+ in 2020.</span><button type="button" class="reveal-btn" id="e05-reveal" aria-label="Reveal concealed ledger figures">reveal</button></p>
+    <div class="ledger-strip" id="e05-strip" hidden>
+      <span class="ls-item"><b>29,655</b> BTC &middot; server side (2013)</span>
+      <span class="ls-item"><b>144,336</b> BTC &middot; laptop (sold 2017 &rarr; $48,238,116)</span>
+      <span class="ls-item"><b>69,370</b> BTC &middot; &ldquo;Individual X&rdquo; (2020 &rarr; $1B+)</span>
+    </div>
 
     <div class="dt-wrap">
       <table class="dt">
@@ -1050,11 +1306,12 @@
     </div>
 
     <p class="sec-p wide">The pipeline follows a consistent flow: independent researchers discover vulnerabilities and sell to gray-market brokers (Zerodium, Exodus Intelligence, Operation Zero) who weaponize and license exploits to government clients. Black-market forums (XSS.is, Exploit.in, RAMP) occasionally bypass formal brokers, selling directly to criminal actors. Stuxnet&rsquo;s deployment of four simultaneous zero-days in 2010 remains the landmark demonstration of state-level exploit integration.</p>
+    <!-- JS: /* the giraffe was egotistical */ -->
   </div>
 </section>
 
 <!-- 10: Censorship -->
-<section>
+<section id="censorship">
   <div class="wrap">
     <div class="sec-label">10 &mdash; The Arms Race</div>
     <h2 class="sec-h">Censorship Resistance <span class="highlight">2026</span></h2>
@@ -1107,7 +1364,7 @@
 </section>
 
 <!-- 11: Beyond Tor -->
-<section>
+<section id="beyond">
   <div class="wrap">
     <div class="sec-label">11 &mdash; Adjacent Networks</div>
     <h2 class="sec-h">Beyond Tor: Other <span class="highlight">Darknets</span></h2>
@@ -1135,8 +1392,9 @@
   </div>
 </section>
 
+<!-- i2p calls it garlic routing. layers within layers. some networks you can't peel. riddle: what is many layers inside one clove? -->
 <!-- 12: Future -->
-<section>
+<section id="future">
   <div class="wrap">
     <div class="sec-label">12 &mdash; Outlook</div>
     <h2 class="sec-h">Future <span class="highlight">Directions</span></h2>
@@ -1195,6 +1453,36 @@
 </footer>
 
 <button class="btt" id="btt" aria-label="Back to top">&#8593;</button>
+
+<!-- ═══════════════════════════════════════════════════════════
+     HIDDEN LAYER — components (SAURON v1.0)
+     Nothing in this block is visible until something finds you.
+     ═══════════════════════════════════════════════════════════ -->
+<canvas id="s-rain" aria-hidden="true"></canvas>
+<button type="button" id="s-classified" hidden>
+  <span class="sc-inner">
+    <span class="sc-tag">CLASSIFIED</span>
+    <span class="sc-msg" id="s-classified-msg"></span>
+  </span>
+</button>
+<button type="button" id="s-hud" aria-label="Open the record panel" hidden>
+  <span class="dot" aria-hidden="true"></span>
+  <span id="s-hud-count">0/7</span>
+  <span class="keys" id="s-hud-keys" hidden></span>
+</button>
+<div id="s-toast" role="status" aria-live="polite"></div>
+<div id="s-drawer" class="s-overlay drawer" hidden>
+  <div class="s-panel" role="dialog" aria-modal="true" aria-label="Exhibit" tabindex="-1">
+    <button type="button" class="s-close" aria-label="Close exhibit">✕</button>
+    <div id="s-drawer-body"></div>
+  </div>
+</div>
+<div id="s-full" class="s-overlay full" hidden>
+  <div class="s-panel" role="dialog" aria-modal="true" aria-label="The Vault" tabindex="-1">
+    <button type="button" class="s-close" aria-label="Close">✕</button>
+    <div id="s-full-body"></div>
+  </div>
+</div>
 
 <script>
 (function() {
@@ -1310,6 +1598,1442 @@
   }, { threshold: 0.3 });
   var statsSec = document.querySelector('.stat-row');
   if (statsSec) co.observe(statsSec);
+})();
+</script>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   SAURON v1.0 — the hidden layer of the Dark Web Brief.
+
+   A museum, not a market. Nothing here is for sale.
+   Everything here is footnoted. Type sauron.help().
+
+   Design rules:
+   · Facts carry sources; folklore carries LEGEND; atmosphere carries ART.
+   · No market links, no operational content, no scareware.
+   · Keyboard parity for every trigger; prefers-reduced-motion honored.
+   · State lives in localStorage (sauron.state.v1); reset with ?reset=1.
+   ═══════════════════════════════════════════════════════════════ */
+(function () {
+  "use strict";
+
+  var doc = document, win = window;
+  var $ = function (s, c) { return (c || doc).querySelector(s); };
+  var $$ = function (s, c) { return Array.prototype.slice.call((c || doc).querySelectorAll(s)); };
+  var reduced = !!(win.matchMedia && win.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  var LSK = "sauron.state.v1";
+  var VERSION = "1.0";
+
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (m) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[m];
+    });
+  }
+
+  /* ───────────── SHA3-256 (FIPS 202) — compact implementation ─────────────
+     Used fully offline to verify v3 onion checksums (E04). Tested against
+     NIST vectors and cross-checked against node:crypto across sizes 0–300. */
+  var MASK64 = (1n << 64n) - 1n;
+  var RHO = [0,1,62,28,27,36,44,6,55,20,3,10,43,25,39,41,45,15,21,8,18,2,61,56,14];
+  var KRC = [
+    0x0000000000000001n, 0x0000000000008082n, 0x800000000000808an, 0x8000000080008000n,
+    0x000000000000808bn, 0x0000000080000001n, 0x8000000080008081n, 0x8000000000008009n,
+    0x000000000000008an, 0x0000000000000088n, 0x0000000080008009n, 0x000000008000000an,
+    0x000000008000808bn, 0x800000000000008bn, 0x8000000000008089n, 0x8000000000008003n,
+    0x8000000000008002n, 0x8000000000000080n, 0x000000000000800an, 0x800000008000000an,
+    0x8000000080008081n, 0x8000000000008080n, 0x0000000080000001n, 0x8000000080008008n
+  ];
+  function rotl(v, n) {
+    n = BigInt(n);
+    return n === 0n ? v : (((v << n) | (v >> (64n - n))) & MASK64);
+  }
+  function keccakF(A) {
+    for (var round = 0; round < 24; round++) {
+      var C = [], D = [], x, y, i;
+      for (x = 0; x < 5; x++) C[x] = A[x] ^ A[x + 5] ^ A[x + 10] ^ A[x + 15] ^ A[x + 20];
+      for (x = 0; x < 5; x++) D[x] = C[(x + 4) % 5] ^ rotl(C[(x + 1) % 5], 1);
+      for (i = 0; i < 25; i++) A[i] ^= D[i % 5];
+      var B = new Array(25);
+      for (i = 0; i < 25; i++) {
+        x = i % 5; y = (i - x) / 5;
+        B[y + 5 * ((2 * x + 3 * y) % 5)] = rotl(A[i], RHO[i]);
+      }
+      for (y = 0; y < 5; y++) for (x = 0; x < 5; x++) {
+        A[x + 5 * y] = B[x + 5 * y] ^ ((B[((x + 1) % 5) + 5 * y] ^ MASK64) & B[((x + 2) % 5) + 5 * y]);
+      }
+      A[0] ^= KRC[round];
+    }
+  }
+  function sha3_256(bytes) {
+    var rate = 136, A = new Array(25).fill(0n), p = new Uint8Array(rate);
+    function absorb() {
+      for (var i = 0; i < rate; i++) A[(i / 8) | 0] ^= BigInt(p[i]) << BigInt(8 * (i % 8));
+      keccakF(A);
+    }
+    var total = bytes.length, offset = 0, rem;
+    while (total - offset >= rate) {
+      p.fill(0); p.set(bytes.subarray(offset, offset + rate));
+      absorb(); offset += rate;
+    }
+    p.fill(0);
+    rem = total - offset;
+    if (rem > 0) p.set(bytes.subarray(offset, offset + rem));
+    p[rem] ^= 0x06;
+    p[rate - 1] ^= 0x80;
+    absorb();
+    var out = new Uint8Array(32);
+    for (var k = 0; k < 32; k++) out[k] = Number((A[(k / 8) | 0] >> BigInt(8 * (k % 8))) & 0xffn);
+    return out;
+  }
+  function b32decode(s) {
+    var A = "abcdefghijklmnopqrstuvwxyz234567", bits = 0, value = 0, out = [];
+    for (var i = 0; i < s.length; i++) {
+      var idx = A.indexOf(s[i].toLowerCase());
+      if (idx === -1) return null;
+      value = (value << 5) | idx; bits += 5;
+      if (bits >= 8) { out.push((value >>> (bits - 8)) & 0xff); bits -= 8; }
+    }
+    return Uint8Array.from(out);
+  }
+  function verifyOnion(addr) {
+    addr = String(addr || "").trim().toLowerCase().replace(/\.onion$/, "").replace(/\s/g, "");
+    if (!/^[a-z2-7]{56}$/.test(addr)) return { ok: false, reason: "format" };
+    var bytes = b32decode(addr);
+    if (!bytes || bytes.length !== 35) return { ok: false, reason: "decode" };
+    var pk = bytes.slice(0, 32), checksum = bytes.slice(32, 34), version = bytes[34];
+    if (version !== 3) return { ok: false, reason: "version" };
+    var input = new Uint8Array(48);
+    input.set(new TextEncoder().encode(".onion checksum"), 0);
+    input.set(pk, 15);
+    input[47] = 3;
+    var h = sha3_256(input);
+    var ok = h[0] === checksum[0] && h[1] === checksum[1];
+    var hex2 = function (u) { return u[0].toString(16).padStart(2, "0") + u[1].toString(16).padStart(2, "0"); };
+    return { ok: ok, reason: ok ? "verified" : "checksum", expected: hex2(checksum), got: hex2(h) };
+  }
+
+  /* ───────────── ciphers ───────────── */
+  function rot13(s) {
+    return s.replace(/[a-z]/gi, function (c) {
+      var base = c <= "Z" ? 65 : 97;
+      return String.fromCharCode(((c.charCodeAt(0) - base + 13) % 26) + base);
+    });
+  }
+  function zwEncode(s) {
+    var out = "";
+    for (var i = 0; i < s.length; i++) {
+      var b = s.charCodeAt(i).toString(2);
+      while (b.length < 8) b = "0" + b;
+      for (var j = 0; j < 8; j++) out += b[j] === "0" ? "\u200b" : "\u200d";
+    }
+    return out;
+  }
+  function zwDecode(s) {
+    var bits = "";
+    for (var i = 0; i < s.length; i++) {
+      if (s[i] === "\u200b") bits += "0";
+      else if (s[i] === "\u200d") bits += "1";
+    }
+    if (bits.length < 16) return null;
+    var out = "";
+    for (var j = 0; j + 8 <= bits.length; j += 8) out += String.fromCharCode(parseInt(bits.substr(j, 8), 2));
+    return out;
+  }
+  function printable(x) { return x.length > 0 && /^[\x20-\x7E\u00A0-\uFFFF]*$/.test(x); }
+  function decodeChain(raw) {
+    var s = String(raw || "");
+    var zw = zwDecode(s);
+    if (zw) return { method: "zero-width (U+200B / U+200D)", result: zw };
+    var t = s.trim();
+    if (/^[A-Za-z0-9+/=\s]+$/.test(t) && t.replace(/\s/g, "").length % 4 === 0 && /[A-Za-z]/.test(t)) {
+      try {
+        var b = atob(t.replace(/\s/g, ""));
+        if (printable(b)) return { method: "base64", result: b };
+      } catch (e) {}
+    }
+    if (/^[0-9a-f\s]+$/i.test(t) && t.replace(/\s/g, "").length % 2 === 0 && t.replace(/\s/g, "").length >= 4) {
+      var h = t.replace(/\s/g, "").match(/../g).map(function (x) { return String.fromCharCode(parseInt(x, 16)); }).join("");
+      if (printable(h)) return { method: "hex", result: h };
+    }
+    var r = rot13(t);
+    if (r !== t) return { method: "rot13", result: r };
+    return { method: "none", result: s };
+  }
+
+  /* ───────────── state ───────────── */
+  /* ?reset=1 must clear storage BEFORE the in-memory state is read,
+     otherwise the boot save() would resurrect the old record. */
+  var RESETTING = false;
+  try { RESETTING = /[?&]reset=1(&|$)/.test(win.location.search); } catch (e) {}
+  if (RESETTING) { try { localStorage.removeItem(LSK); } catch (e) {} }
+  function readState() {
+    try { return JSON.parse(localStorage.getItem(LSK)) || null; } catch (e) { return null; }
+  }
+  var state = readState() || {};
+  state.found = state.found || [];
+  state.keys = state.keys || [];
+  state.flags = state.flags || {};
+  state.visits = state.visits || 0;
+  function save() {
+    try { localStorage.setItem(LSK, JSON.stringify(state)); } catch (e) {}
+  }
+
+  /* ───────────── registry ───────────── */
+  var FRAGMENTS = ["E01", "E03", "E07", "E11", "E14", "E15", "E19"];
+  var CHAINS = [
+    { key: "A", name: "The Operator's Trail", links: ["E01", "E11", "E12"], line: "He was caught by his own questions." },
+    { key: "B", name: "The Layers", links: ["E04", "E06", "E21", "E14"], line: "Every layer is a promise and a risk." },
+    { key: "C", name: "The Cipher", links: ["E05", "E13", "E16", "E15"], line: "The money never forgets, and neither does the record." }
+  ];
+  var TIERS = { C: "Casual · no tools", D: "Dedicated · look under the hood", O: "Obsessive · tools required" };
+
+  var SECRETS = [
+    { id: "E01", t: "C", ch: "Hero", title: "The Comment in the Hero", chip: "fact", how: "View the page source (Ctrl+U) — or open the console and ask for help.", src: [["The question, still live", "https://stackoverflow.com/questions/15445285"], ["Criminal complaint (archive)", "https://archive.org/details/UlbrichtCriminalComplaint_201310"]] },
+    { id: "E02", t: "C", ch: "Console", title: "The Console Banner", chip: "fact", how: "Open DevTools (F12) on any load.", src: [["Tor Project — history", "https://www.torproject.org/about/history/"]] },
+    { id: "E03", t: "C", ch: "Anywhere", title: "Konami: 1986", chip: "fact", how: "↑ ↑ ↓ ↓ ← → ← → B A — anywhere on the page.", src: [["Konami Code (history)", "https://en.wikipedia.org/wiki/Konami_Code"], ["Atlas Obscura — a brief history", "https://www.atlasobscura.com/articles/cheating-wonders-a-brief-history-of-the-konami-code"]] },
+    { id: "E04", t: "C", ch: "02 — Architecture", title: "Type ONION (three times)", chip: "fact", how: "Type the word — each attempt peels a layer.", src: [["v3 onion address spec", "https://spec.torproject.org/rend-spec-v3.html"], ["Tor design paper (USENIX 2004)", "https://www.usenix.org/legacy/event/sec04/tech/full_papers/dingledine/dingledine.pdf"]] },
+    { id: "E05", t: "C", ch: "08 — Crypto", title: "The Whiteout Ledger", chip: "fact", how: "Select the transparent line in Chapter 8 — or press reveal.", src: [["DOJ — $48M sale of Silk Road bitcoins", "https://www.justice.gov/usao-sdny/pr/acting-manhattan-us-attorney-announces-forfeiture-48-million-sale-silk-road-bitcoins"], ["DOJ — $1B+ forfeiture (2020)", "https://www.justice.gov/usao-ndca/pr/united-states-files-civil-action-forfeit-cryptocurrency-valued-over-one-billion-us"]] },
+    { id: "E06", t: "C", ch: "Anywhere", title: "Favicon Flip", chip: "fact", how: "Leave the tab hidden for sixty seconds.", src: [["Tor — WebTunnel: hiding in plain sight", "https://blog.torproject.org/introducing-webtunnel-evading-censorship-by-hiding-in-plain-sight"]] },
+    { id: "E07", t: "C", ch: "404", title: "Down for Maintenance", chip: "art", how: "Visit any broken URL on this site.", src: [["Ars Technica — FBI and Freedom Hosting", "https://arstechnica.com/tech-policy/2013/09/fbi-admits-what-we-all-suspected-it-compromised-freedom-hostings-tor-servers"], ["CVE-2013-1680", "https://nvd.nist.gov/vuln/detail/CVE-2013-1680"], ["DOJ — Marques sentenced to 27 years", "https://www.justice.gov/usao-md/pr/dark-web-child-pornography-facilitator-sentenced-27-years-federal-prison-conspiracy"]] },
+    { id: "E08", t: "D", ch: "robots.txt", title: "Breadcrumb", chip: "art", how: "Read /robots.txt like a human.", src: [["MDN — robots.txt guide", "https://developer.mozilla.org/en-US/docs/Web/Security/Practical_implementation_guides/Robots_txt"]] },
+    { id: "E09", t: "D", ch: "security.txt", title: "The Real RFC", chip: "fact", how: "Visit /security.txt or /.well-known/security.txt", src: [["RFC 9116", "https://www.rfc-editor.org/rfc/rfc9116"]] },
+    { id: "E10", t: "C", ch: "humans.txt", title: "Humans Behind the Record", chip: "art", how: "Visit /humans.txt", src: [["humanstxt.org", "https://humanstxt.org"]] },
+    { id: "E11", t: "D", ch: "07 — OpSec", title: "Exhibit A-01: FROSTY", chip: "fact", how: "Type frosty — anywhere.", src: [["The Stack Overflow question", "https://stackoverflow.com/questions/15445285"], ["Slate — the post that named him", "https://slate.com/technology/2013/10/silk-road-s-dread-pirate-ross-ulbricht-asked-stack-overflow-question-under-real-name.html"]] },
+    { id: "E12", t: "D", ch: "03 — History", title: "Seven Clicks", chip: "fact", how: "Click the 2013 timeline node — seven times. (Long-press on mobile.)", src: [["KQED — inside the arrest", "https://www.kqed.org/news/12023762"], ["FBI — Ulbricht's laptop artifact", "https://www.fbi.gov/history/artifacts/ross-william-ulbrichts-laptop"]] },
+    { id: "E13", t: "D", ch: "07 — OpSec", title: "The Zero-Width Letter", chip: "fact", how: "Copy the Chapter 7 paragraph; decode it.", src: [["Unicode — zero-width characters", "https://www.unicode.org/charts/PDF/U2000.pdf"], ["Criminal complaint (archive)", "https://archive.org/details/UlbrichtCriminalComplaint_201310"]] },
+    { id: "E14", t: "D", ch: "06 — Markets", title: "The Hansa Correction", chip: "fact", how: "Scroll down past the market table — then scroll back up.", src: [["WIRED — the Hansa sting", "https://www.wired.com/story/hansa-dutch-police-sting-operation"], ["Europol — Operation Bayonet", "https://www.europol.europa.eu/media-press/newsroom/news/massive-blow-to-criminal-dark-web-activities-after-globally-coordinated-operation"]] },
+    { id: "E15", t: "D", ch: "08 — Crypto", title: "The Ledger Terminal", chip: "fact", how: "Look up documented labels at the end of Chapter 8 — or sauron.ledger().", src: [["DOJ — $48M bitcoin sale", "https://www.justice.gov/usao-sdny/pr/acting-manhattan-us-attorney-announces-forfeiture-48-million-sale-silk-road-bitcoins"], ["WIRED — the $4.4B forfeiture", "https://www.wired.com/story/4-4-billion-silk-road-bitcoin-tigran-gambaryan"]] },
+    { id: "E16", t: "O", ch: "08 — Crypto", title: "Spectrogram: RENDEZVOUS", chip: "fact", how: "After the decoder opens, find the drive noise and press ANALYZE.", src: [["Aphex Twin FAQ — the hidden face", "https://aphextwin.nu/learn/99906995499023.shtml"], ["Mixmag — spectrogram art", "https://mixmag.net/feature/spectrogram-art-music-aphex-twin"]] },
+    { id: "E17", t: "C", ch: "Record", title: "Fragment Counter", chip: "meta", how: "Find any fragment — the chip appears.", src: [] },
+    { id: "E18", t: "C", ch: "Anywhere", title: "03:33", chip: "art", how: "Visit between 03:33 and 03:34, local time.", src: [["FBI — the Playpen case", "https://www.fbi.gov/news/stories/playpen-creator-sentenced-to-30-years"]] },
+    { id: "E19", t: "C", ch: "Record", title: "Anniversary Placards", chip: "fact", how: "Visit on a documented date — or open the placard gallery.", src: [["KQED — the arrest", "https://www.kqed.org/news/12023762"], ["Guardian — Operation Onymous", "https://www.theguardian.com/technology/2014/nov/07/silk-road-20-operation-onymous-dark-web-drugs-takedown"]] },
+    { id: "E20", t: "C", ch: "03 — History", title: "Timeline Sources", chip: "fact", how: "Click any year in the origins timeline.", src: [["Tor Project — history", "https://www.torproject.org/about/history/"]] },
+    { id: "E21", t: "C", ch: "02b — Rendezvous", title: "The Rendezvous Route", chip: "fact", how: "Reach #rv — by name.", src: [["Tor design paper (USENIX 2004)", "https://www.usenix.org/legacy/event/sec04/tech/full_papers/dingledine/dingledine.pdf"]] },
+    { id: "E22", t: "D", ch: "07 — OpSec", title: "SHISHKABOBS", chip: "fact", how: "A handle from the Playpen files — type it.", src: [["FBI — Playpen creator sentenced", "https://www.fbi.gov/news/stories/playpen-creator-sentenced-to-30-years"], ["EFF — Playpen cases FAQ", "https://www.eff.org/pages/playpen-cases-frequently-asked-questions"]] },
+    { id: "E23", t: "D", ch: "09 — Zero-Day", title: "Codename: EgotisticalGiraffe", chip: "fact", how: "Find the Chapter 9 comment; type the codename as one word.", src: [["CVE-2013-1680", "https://nvd.nist.gov/vuln/detail/CVE-2013-1680"], ["DOJ — Marques sentencing", "https://www.justice.gov/usao-md/pr/dark-web-child-pornography-facilitator-sentenced-27-years-federal-prison-conspiracy"]] },
+    { id: "E24", t: "C", ch: "Console", title: "The Pledge", chip: "fact", how: "sauron.pledge() — and sauron.wifi().", src: [["Tor Project statement (2016)", "https://blog.torproject.org/statement-tor-project-software-integrity-and-apple"], ["The Verge — the Harvard case", "https://www.theverge.com/2013/12/18/5224130/fbi-agents-tracked-harvard-bomb-threats-across-tor"]] },
+    { id: "E25", t: "D", ch: "12 — Outlook", title: "The Office", chip: "fact", how: "Click the site logo seven times.", src: [["Chainalysis — darknet markets 2026", "https://www.chainalysis.com/blog/crypto-drug-sales-darknet-markets-2026/"], ["Cybernews — Telegram takedowns", "https://cybernews.com/security/telegram-channels-takedown-criminal-activity/"]] },
+    { id: "E26", t: "D", ch: "05 — Legitimate use", title: "Which Onions Are Real?", chip: "fact", how: "Take the pop quiz in Chapter 5.", src: [["CIA — its onion announcement", "https://www.cia.gov/stories/story/cias-latest-layer-an-onion-site/"], ["SecureDrop directory", "https://securedrop.org/directory/"]] },
+    { id: "E27", t: "C", ch: "04 — Layers", title: "Binary Title", chip: "fact", how: "Rest in Chapter 4 for thirty seconds without scrolling.", src: [["Tor design paper (USENIX 2004)", "https://www.usenix.org/legacy/event/sec04/tech/full_papers/dingledine/dingledine.pdf"]] },
+    { id: "E28", t: "D", ch: "11 — Beyond Tor", title: "Garlic", chip: "fact", how: "The Chapter 11 source comment asks a riddle. Type the answer.", src: [["I2P — garlic routing", "https://geti2p.net/en/docs/how/garlic-routing"]] },
+    { id: "E29", t: "O", ch: "13 — The Vault", title: "Chapter 13: The Vault", chip: "fact", how: "Five of seven fragments — or all three chain keys.", src: [] },
+    { id: "E30", t: "C", ch: "Record", title: "About the Hidden Layer", chip: "meta", how: "sauron.meta() — or from the Vault.", src: [] }
+  ];
+  var byId = {};
+  SECRETS.forEach(function (s) { byId[s.id] = s; });
+
+  var CARDS = [
+    { mmdd: "01-04", title: "Cicada 3301 returns", chip: "home", text: "On January 4, 2012, an anonymous post opened one of the internet's most famous puzzles. We mark the date as homage — and as a warning: unverifiable provenance is how puzzles curdle into misinformation.", src: [["Cicada archive", "https://github.com/cicada-solvers/The-Complete-Cicada3301-Archive"]] },
+    { mmdd: "01-21", title: "The pardon", chip: "fact", text: "Ross Ulbricht, sentenced to life in 2015, was pardoned on January 21, 2025 — eleven years and three months after the library arrest. Same case, two eras of policy.", src: [["KQED — the case, revisited", "https://www.kqed.org/news/12023762"]] },
+    { mmdd: "03-12", title: "WebTunnel ships", chip: "fact", text: "In March 2024, Tor introduced WebTunnel: bridges that hide inside ordinary HTTPS traffic, sharing a port with a real website. Censorship by camouflage, as tooling.", src: [["Tor blog — WebTunnel", "https://blog.torproject.org/introducing-webtunnel-evading-censorship-by-hiding-in-plain-sight"]] },
+    { mmdd: "07-05", title: "AlphaBay seized", chip: "fact", text: "July 5, 2017: AlphaBay goes down. Its users fled to the next market — which was already in police hands. That was the plan.", src: [["DOJ — AlphaBay indictment", "https://www.justice.gov/archives/opa/press-release/file/982826/dl?inline"]] },
+    { mmdd: "07-20", title: "Hansa revealed", chip: "fact", text: "July 20, 2017: the market users trusted as 'safe' was publicly revealed as a police honeypot, run quietly for four weeks. The safe market was the police.", src: [["Europol — Operation Bayonet", "https://www.europol.europa.eu/media-press/newsroom/news/massive-blow-to-criminal-dark-web-activities-after-globally-coordinated-operation"]] },
+    { mmdd: "09-15", title: "Marques sentenced", chip: "fact", text: "September 15, 2021: Eric Eoin Marques received 27 years. His Freedom Hosting served a fake maintenance page that carried a browser exploit — not a Tor break.", src: [["DOJ — 27-year sentence", "https://www.justice.gov/usao-md/pr/dark-web-child-pornography-facilitator-sentenced-27-years-federal-prison-conspiracy"]] },
+    { mmdd: "10-01", title: "Arrest at Glen Park", chip: "fact", text: "October 1, 2013: agents arrest Ross Ulbricht in a San Francisco library and grab his open laptop. Tor was not broken. The screen was open.", src: [["FBI — the laptop artifact", "https://www.fbi.gov/history/artifacts/ross-william-ulbrichts-laptop"]] },
+    { mmdd: "10-02", title: "Silk Road seizure", chip: "fact", text: "October 2, 2013: the seizure is announced. The ledger at the center of it is still being counted — 173,991 BTC in 2013 became billions with time.", src: [["DOJ — seizure announcement", "https://www.justice.gov/archive/usao/nys/pressreleases/February14/RossUlbrichtIndictmentPR.php"]] },
+    { mmdd: "10-16", title: "Welcome to Video", chip: "fact", text: "October 16, 2019: the takedown is announced. The server's IP sat in the site's own source code; the payments were traced on a public ledger. 337 arrests followed.", src: [["DOJ — worldwide takedown", "https://www.justice.gov/archives/opa/pr/south-korean-national-and-hundreds-others-charged-worldwide-takedown-largest-darknet-child"]] },
+    { mmdd: "11-05", title: "Operation Onymous", chip: "fact", text: "November 5–6, 2014: '414 sites seized' was announced — then revised to 267 — and independent analysis found 153 of them were clones. The flagship 'crack' was partly a press release.", src: [["Guardian — the takedown, examined", "https://www.theguardian.com/technology/2014/nov/07/silk-road-20-operation-onymous-dark-web-drugs-takedown"]] }
+  ];
+
+  var YEAR_CARDS = [
+    { y: "1986", h: "A cheat code, kept in by accident", p: "Kazuhisa Hashimoto builds the Konami Code for Gradius because he cannot beat his own game. It ships. It stays. (Cross-ref: E03.)" },
+    { y: "1995", h: "The NRL question", p: "David Goldschlag, Mike Reed, and Paul Syverson ask a question at the US Naval Research Laboratory: can we create internet connections that do not reveal who is talking to whom? Onion routing is the answer.", src: [["Tor Project — history", "https://www.torproject.org/about/history/"]] },
+    { y: "1998", h: "The Navy patents it", p: "The design is patented (US Navy) — the anonymity network people call a criminal tool began as government research. The patent is public.", src: [["Tor Project — history", "https://www.torproject.org/about/history/"]] },
+    { y: "2002–2006", h: "From paper to nonprofit", p: "Roger Dingledine and Nick Mathewson deploy the public Tor network (2002). The USENIX design paper is published (2004) — the same year EFF begins funding the work. The Tor Project becomes a nonprofit in 2006.", src: [["Tor design paper (USENIX 2004)", "https://www.usenix.org/legacy/event/sec04/tech/full_papers/dingledine/dingledine.pdf"]] },
+    { y: "2013", h: "The arrest", p: "The Glen Park library, the open laptop, the seized ledger. (Cross-ref: E12 — click that year seven times.)", src: [["KQED — inside the arrest", "https://www.kqed.org/news/12023762"]] },
+    { y: "2017", h: "The funnel", p: "AlphaBay falls on July 5; Hansa — already run by Dutch police — catches the refugees. (Cross-ref: E14.)", src: [["WIRED — the Hansa sting", "https://www.wired.com/story/hansa-dutch-police-sting-operation"]] }
+  ];
+
+  /* ───────────── toast + banner ───────────── */
+  var toastEl = $("#s-toast"), toastTimer = null;
+  function toast(msg, ms) {
+    if (!toastEl) return;
+    toastEl.innerHTML = msg;
+    toastEl.dataset.on = "1";
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { delete toastEl.dataset.on; }, ms || 6500);
+  }
+
+  var bannerEl = $("#s-classified"), bannerMsg = $("#s-classified-msg"), bannerTimer = null, bannerFn = null, bannerHover = false;
+  function banner(msg, fn) {
+    if (!bannerEl) return;
+    bannerMsg.innerHTML = msg;
+    bannerFn = fn || null;
+    bannerEl.hidden = false;
+    requestAnimationFrame(function () { bannerEl.classList.add("on"); });
+    clearTimeout(bannerTimer);
+    bannerTimer = setTimeout(hideBanner, 16000);
+  }
+  function hideBanner() {
+    if (!bannerEl) return;
+    bannerEl.classList.remove("on");
+    setTimeout(function () { bannerEl.hidden = true; }, reduced ? 0 : 500);
+  }
+  if (bannerEl) {
+    bannerEl.addEventListener("click", function () {
+      if (bannerFn) { var f = bannerFn; bannerFn = null; hideBanner(); f(); }
+      else hideBanner();
+    });
+    bannerEl.addEventListener("mouseenter", function () { bannerHover = true; if (bannerTimer) clearTimeout(bannerTimer); });
+    bannerEl.addEventListener("mouseleave", function () { bannerHover = false; bannerTimer = setTimeout(hideBanner, 5000); });
+    bannerEl.addEventListener("keydown", function (e) { if (e.key === "Escape") hideBanner(); });
+  }
+
+  /* ───────────── overlays ───────────── */
+  var drawerEl = $("#s-drawer"), drawerBody = $("#s-drawer-body");
+  var fullEl = $("#s-full"), fullBody = $("#s-full-body");
+  var currentOverlay = null, lastFocus = null;
+
+  function focusables(root) {
+    return $$('button, [href], input, textarea, select, [tabindex]:not([tabindex="-1"])', root).filter(function (el) {
+      return el.offsetParent !== null || el === doc.activeElement;
+    });
+  }
+  function openOverlay(which, html, opts) {
+    opts = opts || {};
+    var ov = which === "full" ? fullEl : drawerEl;
+    var body = which === "full" ? fullBody : drawerBody;
+    if (!ov || !body) return;
+    body.innerHTML = html;
+    lastFocus = doc.activeElement;
+    ov.hidden = false;
+    ov.style.pointerEvents = "";
+    requestAnimationFrame(function () { ov.classList.add("open"); });
+    var panel = $(".s-panel", ov);
+    if (panel) panel.focus();
+    currentOverlay = ov;
+    doc.body.style.overflow = "hidden";
+    if (opts.after) opts.after(body, ov);
+  }
+  function closeOverlay() {
+    if (!currentOverlay) return;
+    var ov = currentOverlay;
+    currentOverlay = null;
+    ov.classList.remove("open");
+    ov.style.pointerEvents = "none";
+    setTimeout(function () { ov.hidden = true; }, reduced ? 0 : 240);
+    doc.body.style.overflow = "";
+    if (lastFocus && lastFocus.focus) { try { lastFocus.focus(); } catch (e) {} }
+  }
+  doc.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && currentOverlay) { closeOverlay(); return; }
+    if (e.key !== "Tab" || !currentOverlay) return;
+    var f = focusables(currentOverlay);
+    if (!f.length) return;
+    var first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && doc.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && doc.activeElement === last) { e.preventDefault(); first.focus(); }
+  });
+  [drawerEl, fullEl].forEach(function (ov) {
+    if (!ov) return;
+    ov.addEventListener("click", function (e) { if (e.target === ov) closeOverlay(); });
+    var btn = $(".s-close", ov);
+    if (btn) btn.addEventListener("click", closeOverlay);
+  });
+
+  /* delegation: works for content swapped into either overlay */
+  function delegate(container) {
+    if (!container) return;
+    container.addEventListener("click", function (e) {
+      var t = e.target;
+      var rec = t.closest ? t.closest("[data-record]") : null;
+      if (rec) { openRecord(rec.getAttribute("data-record")); return; }
+      var open = t.closest ? t.closest("[data-open]") : null;
+      if (open) {
+        var what = open.getAttribute("data-open");
+        if (what === "vault") openVault();
+        else if (what === "meta") openMeta();
+        else if (what === "cards") openCards();
+        return;
+      }
+      var route = t.closest ? t.closest("[data-route]") : null;
+      if (route) { location.hash = route.getAttribute("data-route"); }
+    });
+  }
+  delegate(drawerBody); delegate(fullBody);
+
+  /* ───────────── record / keys / vault ───────────── */
+  function has(id) { return state.found.indexOf(id) !== -1; }
+  function fragmentCount() { return state.found.filter(function (id) { return FRAGMENTS.indexOf(id) !== -1; }).length; }
+  function record(id) {
+    if (has(id)) return false;
+    state.found.push(id); save();
+    var s = byId[id] || { title: id };
+    var frag = FRAGMENTS.indexOf(id) !== -1;
+    console.log("%c◆ record recovered — " + id + " · " + s.title, "color:#10b981;font-weight:600");
+    toast("Record <b>" + id + "</b> recovered — " + esc(s.title) + "." + (frag ? " Fragment <b>" + fragmentCount() + "/7</b>." : ""));
+    checkKeys();
+    checkVault();
+    updateHUD();
+    try { doc.dispatchEvent(new CustomEvent("sauron:record", { detail: { id: id } })); } catch (e) {}
+    return true;
+  }
+  function discover(id) { record(id); openRecord(id); }
+  function checkKeys() {
+    CHAINS.forEach(function (c) {
+      if (state.keys.indexOf(c.key) !== -1) return;
+      var done = c.links.every(function (l) { return has(l); });
+      if (done) {
+        state.keys.push(c.key); save();
+        toast("Chain key <b>" + c.key + "</b> recovered — " + c.name + ". <b>" + c.line + "</b>");
+        console.log("%c⛓ chain key " + c.key + " — " + c.name, "color:#5e6ad2;font-weight:700");
+        updateHUD();
+      }
+    });
+  }
+  function checkVault() {
+    if (state.flags.vaultOpen) return;
+    if (fragmentCount() >= 5 || state.keys.length >= 3) {
+      state.flags.vaultOpen = true; save();
+      toast("The <b>Vault</b> is open. Five fragments was all it asked for. <b>#vault</b>", 9000);
+      console.log("%c🔓 THE VAULT IS OPEN — visit #vault", "color:#5e6ad2;font-weight:700;font-size:14px");
+    }
+  }
+
+  /* ───────────── HUD ───────────── */
+  var hud = $("#s-hud"), hudCount = $("#s-hud-count"), hudKeys = $("#s-hud-keys");
+  function updateHUD() {
+    if (!hud) return;
+    if (!state.found.length) return;
+    hud.hidden = false;
+    requestAnimationFrame(function () { hud.classList.add("visible"); });
+    hudCount.textContent = fragmentCount() + "/7";
+    if (state.keys.length) {
+      hudKeys.hidden = false;
+      hudKeys.textContent = "⛓ " + state.keys.length + "/3";
+    }
+  }
+  function renderHUD() {
+    var frag = fragmentCount();
+    var html = '<div class="s-kicker">The Record · secrets v' + VERSION + "</div>" +
+      '<div class="s-title">Fragments ' + frag + "/7 · Records " + state.found.length + "/30</div>" +
+      '<p class="s-p">Fragments are the seven core exhibits the Vault listens for. Records are everything you have found. Nothing here is missable: facts live in the article year-round, and this panel keeps what you recovered.</p>';
+    html += '<div class="chain"><div class="cl-name">Chains <span>— three keys, one perfect run</span></div>';
+    CHAINS.forEach(function (c) {
+      html += '<div class="chain" style="margin:10px 0 14px"><div class="cl-name">' +
+        (state.keys.indexOf(c.key) !== -1 ? "⛓ " : "") + c.name + "</div><div class=\"cl-links\">" +
+        c.links.map(function (l) {
+          return '<span class="cl-link' + (has(l) ? " found" : "") + '">' + l + "</span>";
+        }).join("") + "</div></div>";
+    });
+    html += "</div>";
+    var found = SECRETS.filter(function (s) { return has(s.id); });
+    if (found.length) {
+      html += '<p class="s-p" style="margin-top:22px"><b>Recovered exhibits</b> — open any of them again:</p><div style="display:flex;flex-wrap:wrap">';
+      found.forEach(function (s) {
+        html += '<button type="button" class="s-btn ghost" data-record="' + s.id + '" style="font-size:11.5px;padding:8px 12px">' + s.id + " · " + esc(s.title) + "</button>";
+      });
+      html += "</div>";
+    }
+    var missing = FRAGMENTS.filter(function (l) { return !has(l); });
+    if (missing.length) html += '<p class="s-p" style="color:var(--text-tertiary)">Awaiting fragments: ' + missing.join(" · ") + "</p>";
+    html += '<div style="margin-top:20px">';
+    if (state.flags.vaultOpen) html += '<button type="button" class="s-btn" data-open="vault">Open the Vault</button>';
+    else html += '<button type="button" class="s-btn ghost" data-open="vault">The Vault — sealed (' + frag + "/7)</button>";
+    html += '<button type="button" class="s-btn ghost" data-open="cards">Placard gallery</button>';
+    html += '<button type="button" class="s-btn ghost" data-open="meta">About this layer</button></div>';
+    openOverlay("drawer", html, { label: "The Record" });
+  }
+  if (hud) hud.addEventListener("click", renderHUD);
+
+  /* ───────────── helpers for content ───────────── */
+  var CHIPMAP = { fact: "LOGGED FACT", art: "ART", legend: "LEGEND", home: "HOMAGE", meta: "META" };
+  function CHIP(kind) { return '<span class="s-chip ' + (kind || "fact") + '">' + (CHIPMAP[kind] || kind) + "</span>"; }
+  function SRC(label, url) { return '<a class="s-src" href="' + url + '" target="_blank" rel="noopener noreferrer">' + label + " ↗</a>"; }
+  function sourcesBlock(list) {
+    if (!list || !list.length) return "";
+    return '<p style="margin-top:18px">' + list.map(function (s) { return SRC(s[0], s[1]); }).join("") + "</p>";
+  }
+  function header(s) {
+    return '<div class="s-kicker">' + esc(s.ch || "") + " · " + esc(TIERS[s.t] || "") + "</div>" +
+      '<div class="s-title">' + esc(s.title) + "</div>" + CHIP(s.chip) + '<span class="s-chip meta">' + esc(s.id) + "</span>";
+  }
+  function howLine(s) {
+    return '<p class="s-p" style="margin-top:20px;color:var(--text-tertiary);font-size:12px"><b>How it was found:</b> ' + esc(s.how) + "</p>";
+  }
+
+  /* ───────────── spectrogram (E16) ───────────── */
+  var FONT57 = {
+    R: ["11110", "10001", "10001", "11110", "10100", "10010", "10001"],
+    E: ["11111", "10000", "10000", "11110", "10000", "10000", "11111"],
+    N: ["10001", "11001", "10101", "10011", "10001", "10001", "10001"],
+    D: ["11110", "10001", "10001", "10001", "10001", "10001", "11110"],
+    Z: ["11111", "00001", "00010", "00100", "01000", "10000", "11111"],
+    V: ["10001", "10001", "10001", "10001", "10001", "01010", "00100"],
+    O: ["01110", "10001", "10001", "10001", "10001", "10001", "01110"],
+    U: ["10001", "10001", "10001", "10001", "10001", "10001", "01110"],
+    S: ["01111", "10000", "10000", "01110", "00001", "00001", "11110"]
+  };
+  function spectroGrid() {
+    var word = "RENDEZVOUS", cols = [];
+    for (var i = 0; i < word.length; i++) {
+      var g = FONT57[word[i]];
+      for (var x = 0; x < 5; x++) {
+        var on = [];
+        for (var y = 0; y < 7; y++) if (g[y][x] === "1") on.push(y);
+        cols.push(on);
+      }
+      cols.push([]);
+    }
+    return { cols: cols, rows: 7 };
+  }
+  function freqFor(row) { return 5000 * Math.pow(0.1, row / 6); }
+  function drawSpectro(canvas) {
+    if (!canvas || !canvas.getContext) return;
+    var grid = spectroGrid();
+    var W = canvas.width, H = canvas.height;
+    var x0 = 54, y0 = 18, cw = (W - x0 - 16) / grid.cols.length, ch = (H - y0 - 30) / grid.rows;
+    var ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = "#05050a"; ctx.fillRect(0, 0, W, H);
+    ctx.strokeStyle = "rgba(255,255,255,.05)";
+    for (var gx = 0; gx <= grid.cols.length; gx += 6) {
+      ctx.beginPath(); ctx.moveTo(x0 + gx * cw, y0); ctx.lineTo(x0 + gx * cw, H - 30); ctx.stroke();
+    }
+    for (var c = 0; c < grid.cols.length; c++) {
+      for (var k = 0; k < grid.cols[c].length; k++) {
+        var row = grid.cols[c][k];
+        var alpha = 0.55 + 0.4 * (1 - row / 6);
+        ctx.fillStyle = "rgba(16,185,129," + alpha.toFixed(2) + ")";
+        ctx.fillRect(x0 + c * cw + 1, y0 + row * ch + 1, cw - 2, ch - 2);
+      }
+    }
+    ctx.fillStyle = "rgba(255,255,255,.45)";
+    ctx.font = "10px monospace";
+    ctx.fillText("5kHz", 8, y0 + 8);
+    ctx.fillText("500Hz", 4, H - 34);
+    ctx.fillText("0s", x0, H - 12);
+    ctx.fillText("1s", x0 + grid.cols.length / 3 * cw, H - 12);
+    ctx.fillText("2s", x0 + grid.cols.length / 3 * 2 * cw, H - 12);
+    ctx.fillText("3s", x0 + grid.cols.length * cw - 10, H - 12);
+  }
+  function renderNoise(sr) {
+    var grid = spectroGrid();
+    var colDur = 0.055, N = Math.floor(sr * grid.cols.length * colDur), buf = new Float32Array(N);
+    var freqs = [];
+    for (var r = 0; r < 7; r++) freqs.push(freqFor(r));
+    var peak = 0, c, i, k, s0, s1, t, env, v;
+    for (c = 0; c < grid.cols.length; c++) {
+      s0 = Math.floor(c * colDur * sr);
+      s1 = Math.min(N, Math.floor((c + 1) * colDur * sr));
+      var on = grid.cols[c];
+      for (i = s0; i < s1; i++) {
+        t = (i / sr) - c * colDur;
+        env = Math.sin(Math.PI * t / colDur);
+        v = 0;
+        for (k = 0; k < on.length; k++) v += Math.sin(2 * Math.PI * freqs[on[k]] * (i / sr));
+        buf[i] += 0.16 * env * v;
+        if (Math.abs(buf[i]) > peak) peak = Math.abs(buf[i]);
+      }
+    }
+    if (peak > 0) for (i = 0; i < N; i++) buf[i] = buf[i] / peak * 0.85;
+    return buf;
+  }
+  var audioCtx = null;
+  function playNoise() {
+    var AC = win.AudioContext || win.webkitAudioContext;
+    if (!AC) { toast("WebAudio is not available in this browser — the spectrogram still works."); return; }
+    try {
+      if (!audioCtx) audioCtx = new AC();
+      if (audioCtx.state === "suspended") audioCtx.resume();
+      var sr = audioCtx.sampleRate;
+      var data = renderNoise(sr);
+      var ab = audioCtx.createBuffer(1, data.length, sr);
+      ab.copyToChannel(data, 0);
+      var src = audioCtx.createBufferSource();
+      src.buffer = ab;
+      src.connect(audioCtx.destination);
+      src.start();
+    } catch (e) { toast("Audio could not start in this browser."); }
+  }
+
+  /* ───────────── quiz (E26) ───────────── */
+  var QUIZ = [
+    { q: "Which agency runs an official onion service — and tells visitors to verify the Tor Browser first?",
+      opts: ["CIA", "FBI", "NSA", "Europol"], a: 0,
+      fb: "The CIA announced its onion service in May 2019. Its own page teaches verification before access — the exact habit this record wants from you." },
+    { q: "Which company brute-forced a human-readable onion address?",
+      opts: ["Google", "Facebook", "Amazon", "Cloudflare"], a: 1,
+      fb: "Facebook generated vanity prefixes until it found facebookcorewwwi — read as 'facebook's core world wide web infrastructure'. It migrated to a v3 address in 2021." },
+    { q: "In 2025, which major newspaper shut its Tor onion service down — 'effective immediately'?",
+      opts: ["The Guardian", "The New York Times", "The Washington Post", "Le Monde"], a: 1,
+      fb: "The New York Times ended its onion service in 2025. Addresses rot — which is exactly why verification is a habit, not a one-time act." },
+    { q: "Before trusting an onion address you found somewhere, what does this record teach?",
+      opts: ["Paste it into a search engine", "Compare it with the official clearnet announcement and verify the checksum", "Ask in a forum", "Just open it — Tor will protect you"], a: 1,
+      fb: "Find the official clearnet page, copy the address from there, then verify the checksum (E04 has the offline tool). An address is a public key; the checksum catches typos and many fakes." },
+    { q: "SecureDrop — used by hundreds of newsrooms — is built on…",
+      opts: ["Encrypted email", "Tor onion services", "Blockchain", "Signal groups"], a: 1,
+      fb: "SecureDrop routes submissions through onion services so sources can leak without exposing metadata. Journalism is a first-class user of this network." }
+  ];
+  function renderQuiz() {
+    var html = '<p class="s-p">Five questions. The record does not grade you — it corrects you. Every answer carries its sourced write-up.</p><div class="s-quiz">';
+    QUIZ.forEach(function (q, qi) {
+      html += '<div class="q-block" data-q="' + qi + '"><div class="q-text">' + (qi + 1) + ". " + esc(q.q) + "</div>";
+      q.opts.forEach(function (o, oi) {
+        html += '<button type="button" class="q-opt" data-q="' + qi + '" data-i="' + oi + '">' + esc(o) + "</button>";
+      });
+      html += '<div class="q-fb" id="q-fb-' + qi + '"></div></div>';
+    });
+    html += '</div><div id="quiz-done" class="s-note" hidden></div>';
+    return html;
+  }
+  function mountQuiz(root) {
+    var answered = 0;
+    $$(".q-opt", root).forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var qi = +btn.getAttribute("data-q"), oi = +btn.getAttribute("data-i");
+        var block = $('.q-block[data-q="' + qi + '"]', root);
+        if (!block || block.getAttribute("data-done")) return;
+        block.setAttribute("data-done", "1");
+        var q = QUIZ[qi];
+        $$(".q-opt", block).forEach(function (o, j) {
+          if (j === q.a) o.classList.add("ok");
+          else if (j === oi) o.classList.add("no");
+          o.disabled = true;
+        });
+        var fb = $("#q-fb-" + qi, root);
+        if (fb) { fb.classList.add("show"); fb.innerHTML = "<b>" + (oi === q.a ? "Correct." : "Not quite.") + "</b> " + esc(q.fb); }
+        answered++;
+        if (answered >= QUIZ.length) {
+          var done = $("#quiz-done", root);
+          if (done) {
+            done.hidden = false;
+            done.innerHTML = "<b>VERIFICATION PROTOCOL —</b> 1. Find the official clearnet page. 2. Copy the onion address from there. 3. Check the checksum (E04 holds the offline tool). 4. Never trust an address from a random forum — and remember that addresses rot: the NYT's service ended in 2025.";
+          }
+          record("E26");
+        }
+      });
+    });
+  }
+
+  /* ───────────── ledger (E15) ───────────── */
+  var LEDGER = {
+    "SERVER-29655": "29,655 BTC seized from the Silk Road server side (Oct 2013).",
+    "LAPTOP-144336": "144,336 BTC recovered from Ulbricht's laptop. Sold by the US government in 2017 for $48,238,116.",
+    "INDIVIDUAL-X": "69,370 BTC seized from 'Individual X' (Nov 3, 2020 — roughly $1B then; up to ~$4.4B by late 2024). First noticed in 2015 after a partial liquidation: 101 BTC into BTC-e.",
+    "TOTAL-173991": "173,991 BTC — the documented 2013 total. $33.6M at announcement prices. Time did the rest."
+  };
+  function ledgerLookup(label, out) {
+    var key = String(label || "").trim().toUpperCase().replace(/\s+/g, "");
+    if (!key) return;
+    var line;
+    if (LEDGER[key]) {
+      line = '<span class="ok">' + key + "</span>\n" + esc(LEDGER[key]) + "\n";
+      if (key === "TOTAL-173991") line += '<span class="warn">You found the label the list did not show.</span>\n';
+      record("E15");
+    } else {
+      line = '<span class="warn">' + esc(key) + "</span> — no record under that label. The ledger only answers to documented names.\n";
+    }
+    out.innerHTML += line + "\n";
+    out.scrollTop = out.scrollHeight;
+  }
+
+  /* ───────────── content bank ───────────── */
+  var CONTENT = {
+    E01: function () {
+      return '<p class="s-p">You opened the source. In the hero section, where the masthead sits, someone left a note signed <b>FROSTY</b> — and it points at the most human failure in this entire record.</p>' +
+        '<p class="s-p">In March 2013, the operator of the Silk Road asked the internet a question about connecting to a Tor hidden service — posting under his real name. One minute later he renamed the account to hide the association. One minute too late.</p>' +
+        '<p class="s-p">The question is still online. The court used it.</p>';
+    },
+    E02: function () {
+      return '<p class="s-p">The console banner greets readers who look under the hood. The full table of records is one command away: <code>sauron.help()</code>.</p>' +
+        '<ul class="s-list">' +
+        "<li><b>sauron.help()</b> — the table of thirty records, masked until found.</li>" +
+        "<li><b>sauron.about()</b> / <b>sauron.pledge()</b> / <b>sauron.wifi()</b> — sourced statements.</li>" +
+        "<li><b>sauron.decode(str)</b> — base64, hex, ROT13, zero-width.</li>" +
+        "<li><b>sauron.cards()</b> · <b>sauron.ledger()</b> · <b>sauron.route('rv')</b> · <b>sauron.meta()</b></li>" +
+        "</ul>" +
+        '<p class="s-p">Nothing here executes your code. Nothing here phones home. The whole layer is this one file.</p>';
+    },
+    E03: function () {
+      return '<p class="s-p">↑↑↓↓←→←→B A — the Konami Code. Kazuhisa Hashimoto invented it in 1986 for the NES game <i>Gradius</i> because he could not beat his own game. It shipped by accident, stayed in, and became the most famous secret sequence in software.</p>' +
+        '<p class="s-p"><i>Contra</i> made it famous in 1988: thirty extra lives. This record keeps a code too. History is full of kept-in accidents.</p>';
+    },
+    E05: function () {
+      return '<p class="s-p">The transparent line in Chapter 8 is the ledger of one laptop. Select it with your cursor — or press the reveal button — and it becomes visible. Hiding figures in plain sight is an old editorial trick; verifying them is the point.</p>' +
+        '<ul class="s-list">' +
+        "<li><b>29,655 BTC</b> — seized from the Silk Road server side (2013).</li>" +
+        "<li><b>144,336 BTC</b> — recovered from Ulbricht's laptop; sold in 2017 for <b>$48,238,116</b>.</li>" +
+        "<li><b>69,370 BTC</b> — seized from \u201cIndividual X\u201d in 2020 (~$1B), worth up to <b>$4.4B</b> when forfeiture completed.</li>" +
+        "</ul>" +
+        '<p class="s-p">The full ledger terminal — E15 — is at the end of Chapter 8.</p>';
+    },
+    E06: function () {
+      return '<p class="s-p">The network noticed you looked away. Here is what it does when you do not: <b>WebTunnel</b> (March 2024) wraps Tor bridges inside ordinary HTTPS traffic — a bridge and a real website can share one port, one domain, one certificate.</p>' +
+        '<p class="s-p">Censorship circumvention by camouflage is standard tooling now, not folklore. The favicon will keep its own counsel about the rest.</p>';
+    },
+    E07: function () {
+      return '<p class="s-p">On <b>August 4, 2013</b>, every site hosted by Freedom Hosting began serving a fake \u201cDown for Maintenance\u201d page. The page was a browser exploit — <b>CVE-2013-1680</b>, a use-after-free in Firefox 17 ESR — and it beaconed visitors\u2019 real IP addresses to a server in Virginia.</p>' +
+        '<p class="s-p">The codename, from leaked training material: <b>EgotisticalGiraffe</b>. Eric Eoin Marques was sentenced to 27 years in 2021. Tor was not broken; the browser was.</p>' +
+        '<p class="s-p">Any broken URL on this site rebuilds that page — labeled, sourced, and defanged. The label is the difference between a museum and a trap.</p>';
+    },
+    E08: function () {
+      return '<p class="s-p">A robots.txt file is a breadcrumb trail, not a lock. MDN\u2019s own guidance warns that Disallow lines advertise the very paths they name — a classic discovery vector.</p>' +
+        '<p class="s-p">Ours carries one decoded line: <b>\u201cThe most secure part of the internet is the part you upload yourself.\u201d</b> ROT13 is not encryption; it is a doorbell for the curious. Next door: the classified note in Chapter 6.</p>';
+    },
+    E09: function () {
+      return '<p class="s-p">RFC 9116 is real: a machine-readable vulnerability-disclosure policy that any site can host. Ours is valid — because teaching the standard matters more than the number of reports it will ever receive.</p>' +
+        '<p class="s-p">The closing note of the file: <i>this site has no vulnerabilities to report. The internet does. Policy: read Chapter 10.</i></p>';
+    },
+    E10: function () {
+      return '<p class="s-p">Machines get robots.txt. Humans get humans.txt — an informal credits file that has existed as a web convention since the 2000s.</p>' +
+        '<p class="s-p">Ours names the people who lost their freedom so the record could be footnoted. No glamour, no folklore — case studies with outcomes.</p>';
+    },
+    E11: function () {
+      return '<p class="s-p"><b>Exhibit A-01 — the question that caught him.</b> On March 16, 2013, the Silk Road\u2019s operator posted on Stack Overflow as <b>Ross Ulbricht</b>, then renamed the account to <b>frosty</b> about a minute later. He was asking how to connect to a Tor hidden service with cURL in PHP — and the code on his seized server matched his pasted snippet.</p>' +
+        '<ul class="s-list">' +
+        "<li><b>The trail:</b> a 2011 persona (\u201cAltoid\u201d) promoted the market; months later, the same persona asked for \u201can IT pro in the Bitcoin community\u201d to contact <b>rossulbricht@gmail.com</b>.</li>" +
+        "<li><b>The question:</b> still online, still answered, still a landmark.</li>" +
+        "<li><b>The lesson:</b> cryptography did not fail. Routine questions, reused addresses, and timestamps did.</li>" +
+        "</ul>";
+    },
+    E12: function () {
+      return '<p class="s-p"><b>Seven clicks. The FBI spent two years.</b> You clicked the 2013 node until it opened — the record rewards persistence, not luck.</p>' +
+        '<ul class="s-list">' +
+        "<li><b>Mar 2013:</b> the Stack Overflow post — real name, renamed one minute later.</li>" +
+        "<li><b>Oct 1, 2013:</b> at the Glen Park branch of the San Francisco Public Library, agents move in while the admin panel is open and grab the laptop before it can be locked. Tor intact. The screen was not.</li>" +
+        "<li><b>Today:</b> the laptop is an FBI artifact — photographed, catalogued, and the reason this exhibit exists.</li>" +
+        "</ul>";
+    },
+    E13: function () {
+      return '<p class="s-p">Some evidence is invisible. The Chapter 7 paragraph carries zero-width characters — U+200B and U+200D — that survive copying. Select the paragraph, copy it, and paste it here. Or run <code>sauron.decode()</code> in the console.</p>' +
+        '<textarea id="e13-in" placeholder="Paste the copied paragraph (or any suspicious text)…" aria-label="Text to decode" style="width:100%;min-height:80px;background:#060609;border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:var(--mono);font-size:12px;padding:14px;resize:vertical;outline:none"></textarea>' +
+        '<div style="margin-top:10px"><button type="button" class="s-btn" id="e13-run">DECODE</button></div>' +
+        '<div id="e13-out" class="s-note" hidden></div>' +
+        '<p class="s-p" style="color:var(--text-tertiary);font-size:12px">Invisible Unicode is a real forensic topic — watermarks, content-scanning evasion, and scams have all used zero-width characters. The trick is old; the citations are new.</p>';
+    },
+    E14: function () {
+      return '<p class="s-p"><b>CLASSIFIED — the correction this site exists to make.</b> Almost every retelling says Dutch police collected \u201c27,000 IPs\u201d on Hansa. WIRED\u2019s primary reporting says they surveilled <b>27,000 transactions</b>. The IP addresses came from a planted spreadsheet that exposed 64 sellers.</p>' +
+        '<ul class="s-list">' +
+        "<li><b>Jun 20, 2017:</b> Dutch custody of Hansa begins — Operation Bayonet.</li>" +
+        "<li><b>Jul 5:</b> AlphaBay is seized. Its users flee to Hansa — straight down the funnel.</li>" +
+        "<li><b>Jul 20:</b> Hansa is revealed as a honeypot. ~10,000 buyer addresses and data on ~420,000 users reach Europol.</li>" +
+        "</ul>" +
+        '<p class="s-p">One word makes the police look like wizards. The record prefers the word the primary source used.</p>';
+    },
+    E15: function () {
+      return '<p class="s-p">A ledger terminal. Documented labels only — nothing here is for sale, and nothing here runs off your machine. Enter a label:</p>' +
+        '<div class="s-term"><div class="t-out" id="e15-out">LEDGER v1 — documented entries only.\n</div>' +
+        '<div class="t-row"><span>&gt;</span><input id="e15-in" aria-label="Ledger label" placeholder="TYPE A LABEL…" autocomplete="off" spellcheck="false"></div>' +
+        '<div class="t-hint">Known labels: SERVER-29655 · LAPTOP-144336 · INDIVIDUAL-X</div></div>' +
+        '<p class="s-p" style="font-size:12px;color:var(--text-tertiary)">There is a fourth label the list does not show. The record keeps one number for people who add.</p>';
+    },
+    E16: function () {
+      return '<p class="s-p">A three-second noise file, logged in the case notes as \u201crecovered from a seized drive.\u201d Play it — then press ANALYZE. Spectrograms are pictures of sound, and pictures can carry words.</p>' +
+        '<div class="s-spec"><canvas id="e16-canvas" width="720" height="260" aria-label="Spectrogram of the noise file"></canvas></div>' +
+        '<div><button type="button" class="s-btn" id="e16-play">▶ PLAY</button><button type="button" class="s-btn ghost" id="e16-analyze">ANALYZE</button></div>' +
+        '<div id="e16-out" class="s-note" hidden></div>';
+    },
+    E17: function () {
+      return '<p class="s-p">Fragments are the seven core exhibits the Vault listens for: <b>E01 · E03 · E07 · E11 · E14 · E15 · E19</b>. Find five to open the Vault; find all seven for the curator\u2019s note.</p>' +
+        '<p class="s-p">Records are everything else you find. The chip in the corner keeps count — click it any time.</p>';
+    },
+    E18: function () {
+      return '<p class="s-p">03:33. For one minute, the only traffic in the room is yours. ' + CHIP("art") + "</p>" +
+        '<p class="s-p">A footnote from the record, because atmosphere is not evidence: <b>timestamps are not decoration.</b> Investigators reconstruct local time from logs — Playpen\u2019s NIT records, AlphaBay\u2019s server clocks — and \u201cwhen\u201d becomes \u201cwhere\u201d, and \u201cwhere\u201d becomes \u201cwho.\u201d</p>';
+    },
+    E20: function () {
+      var html = '<p class="s-p">The origins file. The record keeps receipts from before \u201cTor\u201d had a name — click any year on the timeline for its card.</p>';
+      YEAR_CARDS.forEach(function (c) {
+        html += '<div class="s-note"><b>' + c.y + " — " + esc(c.h) + "</b><br>" + esc(c.p) + sourcesBlock(c.src) + "</div>";
+      });
+      return html;
+    },
+    E22: function () {
+      return '<p class="s-p">For about two weeks in 2015, the US government ran one of the world\u2019s largest hidden services. The Playpen case: seized in January 2015, then operated under court order from <b>Feb 20 to Mar 4</b> with a \u201cnetwork investigative technique\u201d that returned users\u2019 IP addresses, operating-system usernames, and MAC addresses.</p>' +
+        '<ul class="s-list">' +
+        "<li><b>Scale:</b> 350+ US arrests, 548 international; 55 US children and 296 international children identified or rescued.</li>" +
+        "<li><b>Procedure:</b> courts split over whether the NIT warrant violated Rule 41\u2019s venue rules; the rule was amended in 2016.</li>" +
+        "<li><b>EFF:</b> called it \u201cthe most extensive use of government malware by a US law enforcement agency in a domestic criminal investigation.\u201d</li>" +
+        "</ul>" +
+        '<p class="s-p">The handle in this exhibit belongs to one of the NIT defendants whose case fed the Rule 41 fight. The record states it plainly: procedure is part of the story, not a footnote to it.</p>';
+    },
+    E23: function () {
+      return '<p class="s-p">The comment in Chapter 9 was a name: <b>EgotisticalGiraffe</b> — the codename (from leaked training slides) for the exploit hidden inside Freedom Hosting\u2019s fake maintenance page. The bug: <b>CVE-2013-1680</b>, a use-after-free in Firefox 17 ESR. The consequence: visitors\u2019 IPs beaconed to Virginia.</p>' +
+        '<p class="s-p">The pattern repeats across this record: the network held; the software did not. No Tor break, no magic — a browser bug and a maintenance page.</p>';
+    },
+    E24: function () {
+      return '<p class="s-quote">\u201cThe Tor Project has never received a legal demand to place a backdoor in its programs or source code… we\u2019ve been public about our \u2018no backdoors, ever\u2019 stance.\u201d<span class="ref">Tor Project statement, 2016</span></p>' +
+        '<p class="s-quote">\u201cTor hides where you go. It does not hide that you went.\u201d<span class="ref">The Eldo Kim case — Harvard network logs, December 2013</span></p>' +
+        '<p class="s-p">A university student sent bomb threats through Guerrilla Mail and Tor; he connected through Harvard\u2019s monitored Wi-Fi, and the network logs identified him the same night. One quote is a promise. The other is a limit. The record keeps both.</p>';
+    },
+    E25: function () {
+      return '<p class="s-p"><b>The Office.</b> You clicked the logo seven times — so here is where the market actually moved. In 2025, Telegram blocked more than <b>43.5 million</b> channels and groups; the ecosystem adapted with gated joins, backup channels, and bots rather than leaving. Darknet market on-chain inflows stood at roughly <b>$2.6 billion</b>.</p>' +
+        '<p class="s-p">The lesson: \u201cthe dark web\u201d was always a chapter, not the whole book. The record keeps both — and Chapter 12 is where the next one starts.</p>';
+    },
+    E26: function () { return renderQuiz(); },
+    E27: function () {
+      return '<p class="s-p">The tab title spelled <span class="s-code" style="display:inline;padding:2px 8px">01001111 01001110 01001001 01001111 01001110</span> — <b>ONION</b> in binary. Layered names for layered routing: Tor peels onions; I2P wraps garlic; Hyphanet keeps an encrypted datastore.</p>' +
+        '<p class="s-p">Binary is not secret. It is just less read — which is a strategy the whole record keeps meeting.</p>';
+    },
+    E28: function () {
+      return '<p class="s-p">The Chapter 11 source comment answered its own riddle: <b>garlic</b>. Where Tor routes in circuits of fixed layers (onion), I2P bundles multiple messages into cloves and wraps them together (garlic) — packet-based, largely internal, no clearnet exits by design.</p>' +
+        '<ul class="s-list">' +
+        "<li><b>Tor:</b> circuit-based, 3 hops (6 for hidden services), clearnet exits exist.</li>" +
+        "<li><b>I2P:</b> garlic routing, internal \u201ceepsites\u201d, no exit by default.</li>" +
+        "<li><b>Hyphanet:</b> a peer-to-peer encrypted datastore — publishing, not browsing.</li>" +
+        "</ul>";
+    }
+  };
+
+  /* ───────────── mount bindings ───────────── */
+  var MOUNT = {};
+  MOUNT.E13 = function (root) {
+    var btn = $("#e13-run", root), input = $("#e13-in", root), out = $("#e13-out", root);
+    if (!btn || !input || !out) return;
+    btn.addEventListener("click", function () {
+      var r = decodeChain(input.value);
+      out.hidden = false;
+      if (r.method.indexOf("zero-width") !== -1) {
+        out.innerHTML = "<b>DECODED (" + r.method + "):</b><br><b style=\"color:var(--cyan)\">" + esc(r.result) + "</b><br><br>That sentence is the Altoid trail in five words: a personal email address plus post timestamps were enough for an indictment. The characters were invisible; the consequences were not.";
+        record("E13");
+      } else if (r.method === "none") {
+        out.innerHTML = "Nothing decodable in that text. The carrier is a specific paragraph in <b>Chapter 7 — OpSec</b>. Copy the whole paragraph and paste it here.";
+      } else {
+        out.innerHTML = "<b>Decoded (" + r.method + "):</b><br>" + esc(r.result) + "<br><br><span style=\"color:var(--text-tertiary)\">That worked — and the hidden artifact is elsewhere: copy the Chapter 7 paragraph.</span>";
+      }
+      if (has("E13")) {
+        out.innerHTML += '<div style="margin-top:16px;border-top:1px solid rgba(255,255,255,.07);padding-top:14px"><b>The second artifact.</b> A three-second noise file was recovered with the drive. <div style="margin-top:10px"><button type="button" class="s-btn ghost" data-record="E16">Open the drive noise</button></div></div>';
+      }
+    });
+  };
+  MOUNT.E15 = function (root) {
+    var input = $("#e15-in", root), out = $("#e15-out", root);
+    if (!input || !out) return;
+    function run() { ledgerLookup(input.value, out); input.value = ""; }
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") { e.preventDefault(); run(); }
+    });
+    setTimeout(function () { input.focus(); }, 80);
+  };
+  MOUNT.E16 = function (root) {
+    var play = $("#e16-play", root), analyze = $("#e16-analyze", root), out = $("#e16-out", root), canvas = $("#e16-canvas", root);
+    if (!play || !analyze) return;
+    play.addEventListener("click", playNoise);
+    analyze.addEventListener("click", function () {
+      drawSpectro(canvas);
+      out.hidden = false;
+      out.innerHTML = "<b>RENDEZVOUS.</b> Read left to right — frequencies are the ink. The rendezvous point is where two strangers agree to meet without revealing where they came from; the hard drive spelled it in sound.<br><br>Aphex Twin hid a face at 5:27 in \u201cEquation\u201d using MetaSynth; Nine Inch Nails hid images in these spectrograms; the method is decades old. Draw with frequencies and the picture only appears when someone bothers to look.";
+      record("E16");
+    });
+  };
+  MOUNT.E26 = mountQuiz;
+
+  /* ───────────── layers drawer (E04) ───────────── */
+  function openLayers(stage) {
+    stage = Math.max(1, Math.min(3, stage || state.flags.onion || 1));
+    var s = byId.E04;
+    var html = header(s) +
+      '<div class="peel" aria-hidden="true"><span></span><span></span><span></span></div>' +
+      '<p class="s-p"><b>Each hop peels one layer. The address is the public key.</b> You typed it ' + (stage === 1 ? "once" : stage === 2 ? "twice" : "three times") + " — that is " + (stage === 1 ? "one layer" : stage === 2 ? "two layers" : "the whole onion") + ".</p>";
+    if (stage >= 2) {
+      html += '<p class="s-p">The second layer: a v3 onion address is not a name somebody chose. It is computed:</p>' +
+        '<div class="s-code">onion_v3 = Base32(\n    ed25519_public_key               [32 bytes]\n  \u2016 SHA3-256(".onion checksum" \u2016 public_key \u2016 0x03)[0:2]\n  \u2016 0x03                             [version]\n)  \u2192  56 characters</div>' +
+        '<p class="s-p">The address <b>is</b> the key. That is why you can verify it — and why phishing onions exist at all.</p>';
+    } else {
+      html += '<p class="s-p" style="color:var(--text-tertiary)">There are more layers. Type it again.</p>';
+    }
+    if (stage >= 3) {
+      html += '<p class="s-p">The third layer: the check itself. Paste any 56-character v3 address — the checksum is verified right here, offline. Nothing leaves this page.</p>' +
+        '<div class="s-code" style="padding:8px 14px"><input id="e04-addr" style="width:100%;background:transparent;border:none;outline:none;color:var(--cyan);font-family:var(--mono);font-size:12px;letter-spacing:.4px" placeholder="paste a v3 onion address…" autocomplete="off" spellcheck="false" aria-label="Onion address to verify"></div>' +
+        '<div><button type="button" class="s-btn" id="e04-check">CHECK CHECKSUM</button><button type="button" class="s-btn ghost" id="e04-example">Load a documented example</button></div>' +
+        '<div id="e04-out" class="s-note" hidden></div>';
+    }
+    html += sourcesBlock(s.src) + howLine(s);
+    openOverlay("drawer", html, {
+      label: s.title,
+      after: function (body) {
+        if (stage < 3) return;
+        var out = $("#e04-out", body), input = $("#e04-addr", body);
+        $("#e04-check", body).addEventListener("click", function () {
+          var r = verifyOnion(input.value);
+          out.hidden = false;
+          if (r.ok) out.innerHTML = "<b>CHECKSUM VERIFIED.</b> The address and its key agree — computed in your browser, offline. This is what Tor checks for you.";
+          else if (r.reason === "format") out.innerHTML = "<b>FORMAT FAILED.</b> A v3 address is exactly 56 characters from the base32 alphabet (a–z, 2–7).";
+          else if (r.reason === "checksum") out.innerHTML = "<b>CHECKSUM MISMATCH.</b> Expected <code>" + r.expected + "</code>, computed <code>" + r.got + "</code>. This is what a phishing onion looks like: right shape, wrong key.";
+          else out.innerHTML = "<b>NOT A V3 ADDRESS.</b> Version byte mismatch.";
+        });
+        $("#e04-example", body).addEventListener("click", function () {
+          input.value = "facebookwkhpilnemxj7asaniu7vnjjbiltxjqhye3mhbshg7kx5tfyd.onion";
+          out.hidden = false;
+          out.innerHTML = "Loaded from public documentation — verify it at facebook.com. Press CHECK CHECKSUM.";
+        });
+      }
+    });
+  }
+
+  /* ───────────── record opener ───────────── */
+  function openRecord(id) {
+    var s = byId[id];
+    if (!s) return;
+    if (id === "E21") { revealRV(); return; }
+    if (id === "E04") { openLayers(0); return; }
+    if (id === "E19") { openCards(); return; }
+    if (id === "E29") { openVault(); return; }
+    if (id === "E30") { openMeta(); return; }
+    var html = header(s) + (CONTENT[id] ? CONTENT[id]() : "") + sourcesBlock(s.src) + howLine(s);
+    openOverlay("drawer", html, {
+      label: s.title,
+      after: function (body) { if (MOUNT[id]) MOUNT[id](body); }
+    });
+  }
+  function revealRV() {
+    var rv = $("#rv");
+    if (!rv) return;
+    rv.hidden = false;
+    record("E21");
+    setTimeout(function () {
+      rv.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+    }, 80);
+  }
+
+  /* ───────────── vault ───────────── */
+  var VAULT_ASCII = "  ██████╗  █████╗ ██████╗ ██╗  ██╗    ██╗    ██╗███████╗██████╗ \n" +
+    "  ██╔══██╗██╔══██╗██╔══██╗██║ ██╔╝    ██║    ██║██╔════╝██╔══██╗\n" +
+    "  ██║  ██║███████║██████╔╝█████╔╝     ██║ █╗ ██║█████╗  ██████╔╝\n" +
+    "  ██║  ██║██╔══██║██╔══██╗██╔═██╗     ██║███╗██║██╔══╝  ██╔══██╗\n" +
+    "  ██████╔╝██║  ██║██║  ██║██║  ██╗    ╚███╔███╔╝███████╗██████╔╝\n" +
+    "  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝     ╚══╝╚══╝ ╚══════╝╚═════╝ ";
+  var VAULT_EX = [
+    { h: "The Stack Overflow Post", p: "March 16, 2013. A question about connecting to a Tor hidden service, posted under a real name, renamed one minute later. The server code matched the pasted snippet. The question is still online.", t: "identity leaks through routine questions.", src: [["The question", "https://stackoverflow.com/questions/15445285"], ["Criminal complaint (archive)", "https://archive.org/details/UlbrichtCriminalComplaint_201310"]] },
+    { h: "$1,000,000,000+ on a laptop", p: "144,336 BTC recovered from Ulbricht\u2019s laptop in 2013 sold for $48,238,116 in 2017. 69,370 BTC from \u201cIndividual X\u201d (2020) rose to roughly $4.4B by the time forfeiture completed in 2024.", t: "a public ledger compounds with time.", src: [["DOJ — $48M sale", "https://www.justice.gov/usao-sdny/pr/acting-manhattan-us-attorney-announces-forfeiture-48-million-sale-silk-road-bitcoins"], ["WIRED — the $4.4B forfeiture", "https://www.wired.com/story/4-4-billion-silk-road-bitcoin-tigran-gambaryan"]] },
+    { h: "Hansa\u2019s Excel Trap", p: "Dutch police ran Hansa from June 20 to July 20, 2017. They surveilled 27,000 transactions; a planted spreadsheet exposed 64 sellers\u2019 IPs; ~10,000 buyer addresses went to Europol. AlphaBay\u2019s refugees walked straight into it.", t: "the \u201csafe\u201d market was the police.", src: [["WIRED — the Hansa sting", "https://www.wired.com/story/hansa-dutch-police-sting-operation"], ["Europol — Operation Bayonet", "https://www.europol.europa.eu/media-press/newsroom/news/massive-blow-to-criminal-dark-web-activities-after-globally-coordinated-operation"]] },
+    { h: "EgotisticalGiraffe", p: "August 4, 2013: Freedom Hosting served a fake maintenance page carrying CVE-2013-1680, beaconing visitors\u2019 IPs to Virginia. No Tor break — a browser bug. Eric Eoin Marques was sentenced to 27 years in 2021.", t: "the browser was the target, not the network.", src: [["CVE-2013-1680", "https://nvd.nist.gov/vuln/detail/CVE-2013-1680"], ["Ars Technica — FBI and Freedom Hosting", "https://arstechnica.com/tech-policy/2013/09/fbi-admits-what-we-all-suspected-it-compromised-freedom-hostings-tor-servers"]] },
+    { h: "Playpen\u2019s Two Weeks", p: "The FBI ran Playpen from Feb 20 to Mar 4, 2015 under court order, using a network investigative technique that returned IPs, usernames, and MAC addresses. 350+ US and 548 international arrests followed; courts split over Rule 41 — and the rule was amended in 2016.", t: "procedure is part of the story.", src: [["FBI — the Playpen case", "https://www.fbi.gov/news/stories/playpen-creator-sentenced-to-30-years"], ["EFF — Playpen FAQ", "https://www.eff.org/pages/playpen-cases-frequently-asked-questions"]] },
+    { h: "Welcome to Video\u2019s Ledger", p: "IRS-CI traced bitcoin payments and found the server\u2019s IP sitting in the site\u2019s own source code. 337 arrests across twelve countries; 23 children rescued. The takedown was bookkeeping, not hacking.", t: "money and sloppiness both leave trails.", src: [["DOJ — worldwide takedown", "https://www.justice.gov/archives/opa/pr/south-korean-national-and-hundreds-others-charged-worldwide-takedown-largest-darknet-child"], ["WIRED — the takedown", "https://www.wired.com/story/dark-web-welcome-to-video-takedown-bitcoin"]] },
+    { h: "No Backdoors, Ever", p: "Tor\u2019s developers have stated they would resign rather than weaken the software, and that the project has never received a legal demand to place a backdoor in it. Anonymity infrastructure that resists not by magic but by consent, transparency, and audits.", t: "some systems hold because people refuse.", src: [["Tor Project statement (2016)", "https://blog.torproject.org/statement-tor-project-software-integrity-and-apple"], ["Tor Project — history", "https://www.torproject.org/about/history/"]] }
+  ];
+  function renderVault() {
+    var html = '<div class="s-kicker">Chapter 13 · The Vault</div><div class="s-title" style="font-size:26px">You found the record.</div>' +
+      '<p class="s-p">Seven exhibits. Every one verified in a courtroom, a federal filing, or a peer-reviewed paper. Read slowly.</p>' +
+      '<pre class="s-ascii" aria-hidden="true">' + VAULT_ASCII + "</pre><div class=\"s-vault\">";
+    VAULT_EX.forEach(function (e, i) {
+      html += '<div class="v-ex"><div class="v-num">EXHIBIT ' + ("0" + (i + 1)).slice(-2) + "</div>" +
+        '<div class="v-h">' + e.h + "</div>" + CHIP("fact") + '<p class="s-p">' + e.p + "</p>" +
+        '<p class="v-teach">What it teaches: ' + e.t + "</p>" + sourcesBlock(e.src) + "</div>";
+    });
+    html += "</div>";
+    if (fragmentCount() >= 7) {
+      html += '<div class="s-note"><b>Curator\u2019s note — 7/7 fragments.</b> You read the whole record, not just the loud parts. The layer\u2019s bar is the same as the article\u2019s: a source for every claim, a label for every legend, and a correction published whenever the primary documents disagree with the retellings.</div>';
+    }
+    if (state.keys.length >= 3) {
+      html += '<div class="s-note"><b>Perfect run — all three chain keys.</b> Operator, Layers, Cipher. You did not skip the quiet exhibits. The museum keeps no leaderboard; this note is the only reward, and it is enough.</div>';
+    }
+    html += '<p class="s-sinhala">\u0DB8\u0DD9\u0DBA \u0DBB\u0DC4\u0DC3\u0D9A\u0DCA \u0DB1\u0DDC\u0DC0\u0DDA. \u0DB8\u0DD9\u0DBA \u0DC0\u0DCF\u0DBB\u0DCA\u0DAD\u0DCF\u0DC0\u0D9A\u0DCA.</p>' +
+      '<p class="s-sinhala-en">This is not a secret. This is a record.</p>' +
+      '<div><button type="button" class="s-btn ghost" data-open="meta">About the hidden layer</button><button type="button" class="s-btn ghost" data-route="rv">The rendezvous route</button></div>';
+    return html;
+  }
+  function openVault() {
+    if (!state.flags.vaultOpen) {
+      openOverlay("drawer", '<div class="s-kicker">Chapter 13 · The Vault</div><div class="s-title">The Vault is sealed.</div>' +
+        '<p class="s-p">It opens at <b>five fragments</b> — or at <b>all three chain keys</b>. You carry <b>' + fragmentCount() + "/7 fragments</b> and <b>" + state.keys.length + "/3 keys</b>.</p>" +
+        '<p class="s-p">Fragments: E01 · E03 · E07 · E11 · E14 · E15 · E19. Some are typed. One is on a broken URL. One arrives on a date. The record trusts you to find them.</p>', { label: "The Vault — sealed" });
+      return;
+    }
+    record("E29");
+    openOverlay("full", renderVault(), { label: "Chapter 13 — The Vault" });
+  }
+
+  /* ───────────── meta page ───────────── */
+  function renderMeta() {
+    var html = '<div class="s-kicker">Record · secrets v' + VERSION + " · disclosed</div>" +
+      '<div class="s-title">About the Hidden Layer</div>' +
+      '<p class="s-p"><b>These secrets exist to teach, not to tease.</b> If you take one thing from this layer: verification beats vibes. Claims carry sources; folklore carries labels; nothing here is for sale.</p>' +
+      '<div class="s-note"><b>Why it exists.</b> The article debunks dark-web mythology. The hidden layer makes its method playable: look under the hood, follow a source, check a checksum, read the footnote. Every hidden fact is duplicated here and sourced — curiosity is rewarded, never locked out, and nothing is missable.</div>' +
+      '<p class="s-p" style="margin-top:22px"><b>All thirty records.</b> This list is the canonical answer to \u201cwhat is hidden on this site.\u201d</p>';
+    SECRETS.forEach(function (s) {
+      var found = has(s.id);
+      html += '<div class="meta-row' + (found ? " found" : "") + '"><div class="mi">' + (found ? "◆" : "◇") + " " + s.id + "</div>" +
+        '<div class="mt"><b>' + esc(s.title) + '</b> <span style="color:var(--text-tertiary)">(' + s.t + " · " + esc(s.ch) + ")</span><br>" + esc(s.how) + "</div></div>";
+    });
+    html += '<div class="s-note" style="margin-top:24px"><b>Accessibility.</b> Every trigger has a keyboard path (type, click, Enter). Content revealed by selection or invisible characters is also stated in plain text here. Animations collapse under <code>prefers-reduced-motion</code>; the console API duplicates every interactive tool.</div>' +
+      '<div class="s-note"><b>Ethics &amp; boundaries.</b> No darknet market links — none, ever. No operational guidance. Institutional onion services are referenced through their official clearnet announcements, with checksum verification taught in E04. Cases involving child exploitation appear only as aggregate court statistics. No fake threats, no scareware, no devtools blocking — a museum, not a trap.</div>' +
+      '<div class="s-note"><b>Reset &amp; tools.</b> Clear your progress: <code>?reset=1</code> or <code>sauron.reset()</code>. Author/testing helper: <code>sauron.curator()</code> unlocks everything. The console banner: <code>sauron.help()</code>.</div>' +
+      '<div class="s-note"><b>Why some famous stories are absent.</b> No red rooms, no \u201cMariana\u2019s Web\u201d, no Level 7 — not because they are dangerous, but because no verified instance is documented anywhere in this record\u2019s sources. The absence is the finding.</div>' +
+      '<p class="s-p" style="color:var(--text-tertiary);font-size:11.5px">Version: secrets v' + VERSION + ' · the hidden layer is a documented part of this educational project. Corrections are features: where secondary sources disagree with primary documents, the record corrects — that is the Hansa exhibit\u2019s entire point.</p>';
+    return html;
+  }
+  function openMeta() {
+    record("E30");
+    openOverlay("full", renderMeta(), { label: "About the Hidden Layer" });
+  }
+
+  /* ───────────── placard gallery ───────────── */
+  function todayKey() {
+    var d = new Date();
+    return ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
+  }
+  function renderCards() {
+    var today = todayKey();
+    var html = '<div class="s-kicker">Record · Museum placards</div><div class="s-title">Ten dates the record keeps</div>' +
+      '<p class="s-p">Some dates get a placard automatically when you visit. This gallery is always open — nothing here is FOMO-locked.</p>';
+    CARDS.forEach(function (c) {
+      html += '<div class="v-ex"><div class="v-num">' + c.mmdd.replace("-", " · ") + (c.mmdd === today ? " · TODAY" : "") + "</div>" +
+        '<div class="v-h">' + esc(c.title) + "</div>" + CHIP(c.chip) + '<p class="s-p">' + esc(c.text) + "</p>" + sourcesBlock(c.src) + "</div>";
+    });
+    html += '<div style="margin-top:18px"><button type="button" class="s-btn ghost" data-open="meta">About the hidden layer</button></div>';
+    return html;
+  }
+  function openCards() {
+    record("E19");
+    openOverlay("full", renderCards(), { label: "Museum placards" });
+  }
+
+  /* ───────────── console API ───────────── */
+  var api = {
+    version: VERSION,
+    state: state,
+    help: function () {
+      console.log("%cTHE DARK WEB BRIEF%c — hidden layer v" + VERSION,
+        "font:700 16px Georgia;color:#fff;background:#5e6ad2;padding:4px 12px;border-radius:4px",
+        "color:#5e6ad2;font-weight:600");
+      console.log("You are reading the source of a museum, not a market.\nNothing here is for sale. Everything here is footnoted.");
+      console.table(SECRETS.map(function (s) {
+        return { id: s.id, tier: s.t, chapter: s.ch, title: has(s.id) ? s.title : "████", found: has(s.id) ? "yes" : "" };
+      }));
+      console.log("%cCommands:%c help() · about() · pledge() · wifi() · decode(str) · cards() · ledger() · route('rv') · meta() · reset()",
+        "color:#5e6ad2;font-weight:600", "color:#888");
+      console.log("%cNot everything is found in the console. Some things are typed. Some things are selected. Some things wait.",
+        "color:#555");
+      setTimeout(function () { record("E02"); record("E01"); }, 300);
+      return "help rendered — fragment counters updated";
+    },
+    about: function () {
+      console.log("The Dark Web Brief — an evidence-based investigation with a hidden layer.\nEvery hidden claim carries a source in the UI. The disclosed list: sauron.meta().");
+      return "v" + VERSION;
+    },
+    pledge: function () {
+      console.log('%c"The Tor Project has never received a legal demand to place a backdoor in its programs or source code… we\'ve been public about our \'no backdoors, ever\' stance."\n— Tor Project statement, 2016\nhttps://blog.torproject.org/statement-tor-project-software-integrity-and-apple',
+        "color:#e8e6e3;line-height:1.6");
+      record("E24");
+      return "pledged";
+    },
+    wifi: function () {
+      console.log("%cTor hides where you go. It does not hide that you went.\n— The Eldo Kim case: bomb threats through Guerrilla Mail + Tor, identified via Harvard Wi-Fi logs within hours (Dec 2013).\nhttps://www.theverge.com/2013/12/18/5224130/fbi-agents-tracked-harvard-bomb-threats-across-tor",
+        "color:#e8e6e3;line-height:1.6");
+      record("E24");
+      return "noted";
+    },
+    decode: function (str) {
+      var r = decodeChain(str);
+      console.log("%cdecode → " + r.method, "color:#06b6d4;font-weight:600", "\n" + r.result);
+      return r;
+    },
+    cards: function () { openCards(); return "placards opened"; },
+    ledger: function () { discover("E15"); return "ledger terminal opened"; },
+    route: function (name) { location.hash = String(name || "rv").replace("#", ""); return "routing"; },
+    meta: function () { openMeta(); return "meta opened"; },
+    reset: function () { resetState(); return "state cleared — reloading"; },
+    curator: function () {
+      SECRETS.forEach(function (s) { if (!has(s.id)) record(s.id); });
+      CHAINS.forEach(function (c) {
+        if (state.keys.indexOf(c.key) === -1) {
+          state.keys.push(c.key); save();
+          toast("Chain key <b>" + c.key + "</b> recovered — " + c.name + ".");
+        }
+      });
+      checkVault(); updateHUD();
+      console.log("%c✦ curator mode — every record unlocked. For testing and demonstration.", "color:#f59e0b;font-weight:700");
+      return "all " + SECRETS.length + " records unlocked";
+    }
+  };
+  win.sauron = api;
+
+  function resetState() {
+    try { localStorage.removeItem(LSK); } catch (e) {}
+    var sep = location.search.indexOf("?") === -1 ? "?" : "&";
+    location.href = location.pathname + location.search + sep + "reset=1";
+  }
+
+  /* ───────────── exports for the boot script ───────────── */
+  win.SAURON = {
+    version: VERSION, state: state, save: save, has: has, record: record, discover: discover,
+    fragmentCount: fragmentCount, checkVault: checkVault,
+    toast: toast, banner: banner, hideBanner: hideBanner,
+    overlay: openOverlay, closeOverlay: closeOverlay, openRecord: openRecord,
+    openLayers: openLayers, openVault: openVault, openMeta: openMeta, openCards: openCards,
+    updateHUD: updateHUD,
+    byId: byId, SECRETS: SECRETS, CARDS: CARDS, YEAR_CARDS: YEAR_CARDS,
+    FRAGMENTS: FRAGMENTS, CHAINS: CHAINS,
+    verifyOnion: verifyOnion, decodeChain: decodeChain, zwEncode: zwEncode, zwDecode: zwDecode,
+    sourcesBlock: sourcesBlock, header: header, howLine: howLine, CHIP: CHIP, SRC: SRC, esc: esc,
+    reduced: reduced
+  };
+
+  /* console banner on every load (E02) */
+  console.log("%cTHE DARK WEB BRIEF%c — hidden layer v" + VERSION,
+    "font:700 14px Georgia;color:#fff;background:#5e6ad2;padding:3px 10px;border-radius:4px",
+    "color:#5e6ad2;font-weight:600");
+  console.log("You are reading the source of a museum, not a market.\nNothing here is for sale. Everything here is footnoted.\n\n%cType  sauron.help()  for the record.", "color:#888");
+})();
+</script>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   SAURON v1.0 — boot script: triggers, time gates, routes.
+   Runs after the core. Every trigger below is keyboard-reachable
+   and every animation respects prefers-reduced-motion.
+   ═══════════════════════════════════════════════════════════════ */
+(function () {
+  "use strict";
+  var S = window.SAURON;
+  if (!S) return;
+  var doc = document, win = window;
+  var $ = function (s, c) { return (c || doc).querySelector(s); };
+  var $$ = function (s, c) { return Array.prototype.slice.call((c || doc).querySelectorAll(s)); };
+
+  /* ── ?reset=1 ── */
+  try {
+    var params = new URLSearchParams(win.location.search);
+    if (params.get("reset") === "1") {
+      localStorage.removeItem("sauron.state.v1");
+      params.delete("reset");
+      var qs = params.toString();
+      history.replaceState(null, "", win.location.pathname + (qs ? "?" + qs : "") + win.location.hash);
+      setTimeout(function () { S.toast("The record has been cleared. The secrets remain."); }, 500);
+    }
+  } catch (e) {}
+
+  /* ── visit counter ── */
+  S.state.visits = (S.state.visits || 0) + 1; S.save();
+
+  /* ── zero-width carrier (E13) ── */
+  var carrier = $("#e13-carrier");
+  if (carrier) carrier.textContent = S.zwEncode("email addr + timestamps = indictment");
+
+  /* decoder button appears once E05 is found */
+  function ensureDecoderBtn() {
+    if (!S.has("E05")) return;
+    if ($("#e13-decoder-btn")) return;
+    var host = $("#opsec .sec-p.wide");
+    if (!host) return;
+    var b = doc.createElement("button");
+    b.type = "button";
+    b.className = "reveal-btn";
+    b.id = "e13-decoder-btn";
+    b.style.marginLeft = "0";
+    b.style.marginTop = "10px";
+    b.textContent = "◈ decoder — read the invisible";
+    b.addEventListener("click", function () { S.openRecord("E13"); });
+    host.insertAdjacentElement("afterend", b);
+  }
+  doc.addEventListener("sauron:record", function (e) {
+    if (e.detail && e.detail.id === "E05") ensureDecoderBtn();
+  });
+  ensureDecoderBtn();
+
+  /* ── E05: selection reveal ── */
+  function revealE05() {
+    var span = $("#e05-span"), strip = $("#e05-strip");
+    if (span) span.classList.add("revealed");
+    if (strip) strip.hidden = false;
+    S.record("E05");
+  }
+  var e05Btn = $("#e05-reveal");
+  if (e05Btn) e05Btn.addEventListener("click", revealE05);
+  function checkSelection() {
+    if (S.has("E05")) return;
+    var sel = win.getSelection && win.getSelection();
+    if (!sel || sel.isCollapsed) return;
+    var span = $("#e05-span");
+    if (!span) return;
+    var n = sel.anchorNode;
+    if (n && (span.contains(n) || n === span)) revealE05();
+  }
+  doc.addEventListener("selectionchange", checkSelection);
+
+  /* copying invisible ink gets a hint, not a secret */
+  doc.addEventListener("copy", function () {
+    var sel = win.getSelection && win.getSelection();
+    if (!sel) return;
+    if (/[\u200b\u200d]/.test(String(sel.toString()))) {
+      S.toast("The clipboard now carries invisible ink. Paste it into the decoder — or use <b>sauron.decode()</b>.");
+    }
+  });
+
+  /* ── typed words ── */
+  var buf = "";
+  doc.addEventListener("keydown", function (e) {
+    var t = e.target;
+    if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
+    var k = e.key;
+    if (k && k.length === 1 && /[a-z]/i.test(k)) { buf = (buf + k.toLowerCase()).slice(-40); }
+    else if (k === "Shift") { return; }
+    else { buf = ""; }
+    if (buf.endsWith("egotisticalgiraffe")) { buf = ""; S.discover("E23"); }
+    else if (buf.endsWith("shishkabobs")) { buf = ""; S.discover("E22"); }
+    else if (buf.endsWith("frosty")) { buf = ""; S.discover("E11"); }
+    else if (buf.endsWith("garlic")) { buf = ""; S.discover("E28"); }
+    else if (buf.endsWith("onion")) { buf = ""; onionStage(); }
+  });
+  function onionStage() {
+    var n = (S.state.flags.onion || 0) + 1;
+    S.state.flags.onion = n; S.save();
+    if (n === 1) S.record("E04");
+    S.openLayers(Math.min(n, 3));
+    if (n >= 3) console.log("%c⛓ The rendezvous point has a name: #rv — or sauron.route('rv')", "color:#5e6ad2;font-weight:600");
+  }
+
+  /* ── E03: konami ── */
+  var KON = ["arrowup", "arrowup", "arrowdown", "arrowdown", "arrowleft", "arrowright", "arrowleft", "arrowright", "b", "a"];
+  var ki = 0;
+  doc.addEventListener("keydown", function (e) {
+    var norm = e.key.toLowerCase();
+    if (norm === KON[ki]) {
+      ki++;
+      if (ki === KON.length) { ki = 0; konami(); }
+    } else { ki = norm === KON[0] ? 1 : 0; }
+  });
+  function konami() {
+    if (!S.reduced) onionRain();
+    S.record("E03");
+    setTimeout(function () { S.openRecord("E03"); }, S.reduced ? 0 : 1500);
+  }
+  var rain = $("#s-rain");
+  function onionRain() {
+    if (!rain || !rain.getContext) return;
+    var ctx = rain.getContext("2d");
+    var W = rain.width = win.innerWidth, H = rain.height = win.innerHeight;
+    rain.classList.add("on");
+    var start = performance.now(), DUR = 5200;
+    var colors = ["94,106,210", "6,182,212", "16,185,129"];
+    function frame(now) {
+      var t = (now - start) / DUR;
+      ctx.clearRect(0, 0, W, H);
+      if (t >= 1) { rain.classList.remove("on"); return; }
+      var cx = W / 2, cy = H / 2, fade = Math.sin(Math.PI * t);
+      for (var i = 0; i < 3; i++) {
+        var phase = (t * 1.15 + i / 3) % 1;
+        var r = phase * Math.min(W, H) * 0.58;
+        ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.strokeStyle = "rgba(" + colors[i] + "," + (0.4 * fade * (1 - phase)).toFixed(3) + ")";
+        ctx.lineWidth = 1.5 + 2.5 * (1 - phase);
+        ctx.stroke();
+      }
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  /* ── E06: favicon flip ── */
+  function onionIcon(lit) {
+    var c = doc.createElement("canvas"); c.width = c.height = 64;
+    var x = c.getContext("2d");
+    x.fillStyle = "#0a0a0f"; x.fillRect(0, 0, 64, 64);
+    var rings = [[26, "#5e6ad2"], [17, "#06b6d4"], [8, "#10b981"]];
+    for (var i = 0; i < rings.length; i++) {
+      x.beginPath(); x.arc(32, 32, rings[i][0], 0, Math.PI * 2);
+      x.lineWidth = lit ? 4 : 3;
+      x.strokeStyle = lit && i === 2 ? "#eafff5" : rings[i][1];
+      x.stroke();
+    }
+    return c.toDataURL("image/png");
+  }
+  var favlink = doc.createElement("link");
+  favlink.rel = "icon"; favlink.type = "image/png";
+  favlink.href = onionIcon(false);
+  doc.head.appendChild(favlink);
+  var DIMICON = favlink.href, LITICON = onionIcon(true);
+  var hiddenAt = 0;
+  doc.addEventListener("visibilitychange", function () {
+    if (doc.hidden) { hiddenAt = Date.now(); }
+    else if (hiddenAt && Date.now() - hiddenAt > 60000) {
+      hiddenAt = 0;
+      favlink.href = LITICON;
+      setTimeout(function () { favlink.href = DIMICON; }, 10000);
+      S.record("E06");
+      S.toast("The network noticed you looked away. While you were gone: <b>WebTunnel</b> hides a Tor bridge inside ordinary HTTPS — one port, two worlds. <b>Record E06</b> recovered.");
+    }
+  });
+
+  /* ── E14: classified strip on scroll-up ── */
+  var market = $("#market"), marketArmed = false, marketFired = false, lastY = win.scrollY;
+  function showClassified(manual) {
+    if (marketFired && !manual) return;
+    marketFired = true;
+    S.record("E14");
+    S.banner("<b>CLASSIFIED.</b> Primary sources say Hansa\u2019s 27,000 was <b>transactions</b> — not IPs. One word makes the police look like wizards. Open the note for the correction.", function () { S.openRecord("E14"); });
+  }
+  win.addEventListener("scroll", function () {
+    var y = win.scrollY;
+    if (market) {
+      var top = market.offsetTop, h = market.offsetHeight;
+      if (y > top + h * 0.55) marketArmed = true;
+      if (marketArmed && !marketFired && (lastY - y) > 48) showClassified(false);
+    }
+    lastY = y;
+  }, { passive: true });
+  if (S.reduced) {
+    var mhost = $("#market .pull");
+    if (mhost) {
+      var mb = doc.createElement("button");
+      mb.type = "button"; mb.className = "reveal-btn";
+      mb.style.marginLeft = "0"; mb.style.marginTop = "14px";
+      mb.textContent = "◈ open the classified note";
+      mb.addEventListener("click", function () { showClassified(true); });
+      mhost.insertAdjacentElement("afterend", mb);
+    }
+  }
+
+  /* ── E12 / E20: timeline ── */
+  $$("#history .tl-item").forEach(function (item) {
+    var yearEl = $(".year", item);
+    if (!yearEl) return;
+    var year = yearEl.textContent.trim();
+    yearEl.setAttribute("tabindex", "0");
+    yearEl.setAttribute("role", "button");
+    yearEl.style.cursor = "pointer";
+    if (year === "2013") {
+      yearEl.setAttribute("aria-label", "Year 2013 — the record rewards persistence");
+      bind2013(yearEl);
+    } else {
+      yearEl.setAttribute("aria-label", "Year " + year + " — open its source card");
+      yearEl.addEventListener("click", function () { S.record("E20"); S.openRecord("E20"); });
+      yearEl.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); yearEl.click(); }
+      });
+    }
+  });
+  function bind2013(el) {
+    var n = 0, lastT = 0, pressTimer = null, swallow = false;
+    function bump() {
+      var now = Date.now();
+      if (now - lastT > 2500) n = 0;
+      lastT = now; n++;
+      if (n >= 3 && n < 7) {
+        var tick = $(".e12-tick", el);
+        if (!tick) { tick = doc.createElement("span"); tick.className = "e12-tick"; el.appendChild(tick); }
+        tick.textContent = n + "/7";
+      }
+      if (n >= 7) {
+        n = 0;
+        var t = $(".e12-tick", el);
+        if (t) t.remove();
+        S.discover("E12");
+      }
+    }
+    el.addEventListener("click", function () { if (swallow) { swallow = false; return; } bump(); });
+    el.addEventListener("pointerdown", function () {
+      pressTimer = setTimeout(function () { pressTimer = null; swallow = true; bump(); }, 800);
+    });
+    ["pointerup", "pointerleave", "pointercancel"].forEach(function (ev) {
+      el.addEventListener(ev, function () { if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; } });
+    });
+    el.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); bump(); }
+    });
+  }
+
+  /* ── E25: logo ×7 ── */
+  var logo = $("nav .logo");
+  if (logo) {
+    logo.setAttribute("tabindex", "0");
+    logo.setAttribute("role", "button");
+    logo.setAttribute("aria-label", "DARK WEB");
+    var ln = 0, lt = 0;
+    function bumpLogo() {
+      var now = Date.now();
+      if (now - lt > 2500) ln = 0;
+      lt = now; ln++;
+      if (ln >= 7) { ln = 0; S.discover("E25"); }
+    }
+    logo.addEventListener("click", bumpLogo);
+    logo.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); bumpLogo(); }
+    });
+  }
+
+  /* ── E27: thirty idle seconds in Chapter 4 ── */
+  function currentSectionId() {
+    var y = win.scrollY + win.innerHeight * 0.4;
+    var secs = $$("section");
+    for (var i = 0; i < secs.length; i++) {
+      var s = secs[i];
+      if (s.hidden) continue;
+      if (s.offsetTop <= y && y < s.offsetTop + s.offsetHeight) return s.id || "";
+    }
+    return "";
+  }
+  var idleTimer = null;
+  function armIdle() {
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(function () {
+      if (currentSectionId() === "layers" && !S.has("E27")) {
+        var orig = doc.title;
+        doc.title = "01001111 01001110 01001001 01001111 01001110";
+        S.record("E27");
+        setTimeout(function () { doc.title = orig; }, 3400);
+        S.openRecord("E27");
+      }
+    }, 30000);
+  }
+  win.addEventListener("scroll", armIdle, { passive: true });
+  armIdle();
+
+  /* ── E26: quiz button in Chapter 5 ── */
+  var useSec = $("#use");
+  if (useSec) {
+    var cg = $(".card-grid", useSec);
+    if (cg) {
+      var qb = doc.createElement("button");
+      qb.type = "button"; qb.className = "s-btn ghost"; qb.style.marginTop = "8px";
+      qb.textContent = "◈ pop quiz: which onions are real?";
+      qb.addEventListener("click", function () { S.openRecord("E26"); });
+      cg.insertAdjacentElement("afterend", qb);
+    }
+  }
+
+  /* ── E21 / E29 / E30: hash routes ── */
+  function handleHash() {
+    var h = (win.location.hash || "").replace("#", "");
+    if (h === "rv") S.openRecord("E21");
+    else if (h === "vault") S.openVault();
+    else if (h === "secrets") S.openMeta();
+  }
+  win.addEventListener("hashchange", handleHash);
+  if (win.location.hash) setTimeout(handleHash, 140);
+
+  /* ── E19: anniversary placards ── */
+  var today = (function () {
+    var d = new Date();
+    return ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
+  })();
+  var card = null;
+  for (var ci = 0; ci < S.CARDS.length; ci++) { if (S.CARDS[ci].mmdd === today) { card = S.CARDS[ci]; break; } }
+  if (card && S.state.flags.placard !== today) {
+    S.state.flags.placard = today; S.save();
+    S.record("E19");
+    setTimeout(function () {
+      S.banner("<b>MUSEUM PLACARD — " + card.title + ".</b> " + card.text + " Open the gallery for all ten dates.", function () { S.openCards(); });
+    }, 1200);
+  }
+
+  /* ── E18: 03:33 ── */
+  function checkTimeCard() {
+    var d = new Date();
+    if (d.getHours() === 3 && d.getMinutes() === 33 && !S.has("E18")) {
+      S.record("E18");
+      S.openRecord("E18");
+    }
+  }
+  checkTimeCard();
+  setInterval(checkTimeCard, 30000);
+
+  /* ── referral trails ── */
+  try {
+    var via = new URLSearchParams(win.location.search).get("via");
+    var trail = { hansa: "the Hansa trail", frosty: "the FROSTY trail", onion: "the layers", cipher: "the cipher" };
+    if (via && trail[via]) {
+      setTimeout(function () {
+        S.toast("You arrived from <b>" + trail[via] + "</b>. The record noticed — the market chapter keeps a classified note.");
+      }, 1600);
+    }
+  } catch (e) {}
+
+  /* ── ready ── */
+  S.updateHUD();
+  console.log("%cSAURON v" + S.version + " booted — " + S.state.found.length + " records, " + S.fragmentCount() + "/7 fragments.", "color:#3a3a44");
 })();
 </script>
 </body>
