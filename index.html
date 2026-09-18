@@ -853,6 +853,22 @@
     #s-toast { bottom: 84px; }
   }
 
+  /* ── TTY-7 terminal (E31) ── */
+  .ttywin { background: #050507; border: 1px solid rgba(16,185,129,.18); border-radius: 12px; overflow: hidden; font-family: var(--mono); }
+  .ttybar { display: flex; align-items: center; gap: 7px; padding: 11px 16px; background: #0a0a0f; border-bottom: 1px solid var(--border); font-size: 9.5px; letter-spacing: 2px; color: var(--text-tertiary); text-transform: uppercase; }
+  .ttybar .d { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .ttybody { position: relative; padding: 20px 22px; height: min(56vh, 440px); overflow-y: auto; font-size: 12.5px; line-height: 1.8; color: #9ff0c8; }
+  .ttybody::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(255,255,255,.022) 0 1px, transparent 1px 3px); }
+  .ttyline { white-space: pre-wrap; word-break: break-word; }
+  .ttyline.dim { color: rgba(159,240,200,.42); }
+  .ttyline.warn { color: var(--amber); }
+  .ttyline.err { color: var(--red); }
+  .ttyline.sys { color: var(--cyan); }
+  .ttyrow { display: flex; gap: 9px; padding: 12px 22px 15px; border-top: 1px solid rgba(16,185,129,.12); background: #060608; align-items: center; }
+  .ttyrow .p { color: var(--green); font-size: 12.5px; white-space: nowrap; }
+  .ttyrow input { flex: 1; background: transparent; border: none; outline: none; color: #d7ffe9; font-family: var(--mono); font-size: 12.5px; caret-color: var(--green); }
+  @media (prefers-reduced-motion: reduce) { .ttybody::after { display: none; } }
+
   /* reduced motion */
   @media (prefers-reduced-motion: reduce) {
     #s-rain { display: none; }
@@ -1452,6 +1468,8 @@
   </div>
 </footer>
 
+<!-- tty-7 // three keys and one word // sauron.connect() -->
+
 <button class="btt" id="btt" aria-label="Back to top">&#8593;</button>
 
 <!-- ═══════════════════════════════════════════════════════════
@@ -1622,7 +1640,7 @@
   var $$ = function (s, c) { return Array.prototype.slice.call((c || doc).querySelectorAll(s)); };
   var reduced = !!(win.matchMedia && win.matchMedia("(prefers-reduced-motion: reduce)").matches);
   var LSK = "sauron.state.v1";
-  var VERSION = "1.0";
+  var VERSION = "1.1";
 
   function esc(s) {
     return String(s).replace(/[&<>"]/g, function (m) {
@@ -1817,7 +1835,8 @@
     { id: "E27", t: "C", ch: "04 — Layers", title: "Binary Title", chip: "fact", how: "Rest in Chapter 4 for thirty seconds without scrolling.", src: [["Tor design paper (USENIX 2004)", "https://www.usenix.org/legacy/event/sec04/tech/full_papers/dingledine/dingledine.pdf"]] },
     { id: "E28", t: "D", ch: "11 — Beyond Tor", title: "Garlic", chip: "fact", how: "The Chapter 11 source comment asks a riddle. Type the answer.", src: [["I2P — garlic routing", "https://geti2p.net/en/docs/how/garlic-routing"]] },
     { id: "E29", t: "O", ch: "13 — The Vault", title: "Chapter 13: The Vault", chip: "fact", how: "Five of seven fragments — or all three chain keys.", src: [] },
-    { id: "E30", t: "C", ch: "Record", title: "About the Hidden Layer", chip: "meta", how: "sauron.meta() — or from the Vault.", src: [] }
+    { id: "E30", t: "C", ch: "Record", title: "About the Hidden Layer", chip: "meta", how: "sauron.meta() — or from the Vault.", src: [] },
+    { id: "E31", t: "O", ch: "13b — TTY-7", title: "The Node", chip: "fact", how: "Perfect run — all three chain keys — then sauron.connect(). It asks for the word the seized drive spelled in frequencies.", src: [["Tor design paper (USENIX 2004)", "https://www.usenix.org/legacy/event/sec04/tech/full_papers/dingledine/dingledine.pdf"], ["Tor Project — history", "https://www.torproject.org/about/history/"]] }
   ];
   var byId = {};
   SECRETS.forEach(function (s) { byId[s.id] = s; });
@@ -1944,6 +1963,7 @@
         if (what === "vault") openVault();
         else if (what === "meta") openMeta();
         else if (what === "cards") openCards();
+        else if (what === "terminal") connect();
         return;
       }
       var route = t.closest ? t.closest("[data-route]") : null;
@@ -1980,6 +2000,11 @@
         updateHUD();
       }
     });
+    if (state.keys.length >= 3 && !state.flags.ttyHinted) {
+      state.flags.ttyHinted = true; save();
+      toast("Perfect run — <b>tty-7</b> is listening. <b>sauron.connect()</b>", 9000);
+      console.log("%c⛓⛓⛓ PERFECT RUN — tty-7 is listening. sauron.connect()", "color:#10b981;font-weight:700;font-size:14px");
+    }
   }
   function checkVault() {
     if (state.flags.vaultOpen) return;
@@ -2006,7 +2031,7 @@
   function renderHUD() {
     var frag = fragmentCount();
     var html = '<div class="s-kicker">The Record · secrets v' + VERSION + "</div>" +
-      '<div class="s-title">Fragments ' + frag + "/7 · Records " + state.found.length + "/30</div>" +
+      '<div class="s-title">Fragments ' + frag + "/7 · Records " + state.found.length + "/" + SECRETS.length + "</div>" +
       '<p class="s-p">Fragments are the seven core exhibits the Vault listens for. Records are everything you have found. Nothing here is missable: facts live in the article year-round, and this panel keeps what you recovered.</p>';
     html += '<div class="chain"><div class="cl-name">Chains <span>— three keys, one perfect run</span></div>';
     CHAINS.forEach(function (c) {
@@ -2031,6 +2056,7 @@
     if (state.flags.vaultOpen) html += '<button type="button" class="s-btn" data-open="vault">Open the Vault</button>';
     else html += '<button type="button" class="s-btn ghost" data-open="vault">The Vault — sealed (' + frag + "/7)</button>";
     html += '<button type="button" class="s-btn ghost" data-open="cards">Placard gallery</button>';
+    if (state.keys.length >= 3) html += '<button type="button" class="s-btn ghost" data-open="terminal">⛓ tty-7 — the node</button>';
     html += '<button type="button" class="s-btn ghost" data-open="meta">About this layer</button></div>';
     openOverlay("drawer", html, { label: "The Record" });
   }
@@ -2517,7 +2543,7 @@
       html += '<div class="s-note"><b>Curator\u2019s note — 7/7 fragments.</b> You read the whole record, not just the loud parts. The layer\u2019s bar is the same as the article\u2019s: a source for every claim, a label for every legend, and a correction published whenever the primary documents disagree with the retellings.</div>';
     }
     if (state.keys.length >= 3) {
-      html += '<div class="s-note"><b>Perfect run — all three chain keys.</b> Operator, Layers, Cipher. You did not skip the quiet exhibits. The museum keeps no leaderboard; this note is the only reward, and it is enough.</div>';
+      html += '<div class="s-note"><b>Perfect run — all three chain keys.</b> Operator, Layers, Cipher. You did not skip the quiet exhibits. The museum keeps no leaderboard; this note is the only reward, and it is enough. One more door exists, kept by the night shift: <b>sauron.connect()</b> — it answers to the word the seized drive spelled in frequencies.</div>';
     }
     html += '<p class="s-sinhala">\u0DB8\u0DD9\u0DBA \u0DBB\u0DC4\u0DC3\u0D9A\u0DCA \u0DB1\u0DDC\u0DC0\u0DDA. \u0DB8\u0DD9\u0DBA \u0DC0\u0DCF\u0DBB\u0DCA\u0DAD\u0DCF\u0DC0\u0D9A\u0DCA.</p>' +
       '<p class="s-sinhala-en">This is not a secret. This is a record.</p>' +
@@ -2541,7 +2567,7 @@
       '<div class="s-title">About the Hidden Layer</div>' +
       '<p class="s-p"><b>These secrets exist to teach, not to tease.</b> If you take one thing from this layer: verification beats vibes. Claims carry sources; folklore carries labels; nothing here is for sale.</p>' +
       '<div class="s-note"><b>Why it exists.</b> The article debunks dark-web mythology. The hidden layer makes its method playable: look under the hood, follow a source, check a checksum, read the footnote. Every hidden fact is duplicated here and sourced — curiosity is rewarded, never locked out, and nothing is missable.</div>' +
-      '<p class="s-p" style="margin-top:22px"><b>All thirty records.</b> This list is the canonical answer to \u201cwhat is hidden on this site.\u201d</p>';
+      '<p class="s-p" style="margin-top:22px"><b>All thirty-one records.</b> This list is the canonical answer to \u201cwhat is hidden on this site.\u201d</p>';
     SECRETS.forEach(function (s) {
       var found = has(s.id);
       html += '<div class="meta-row' + (found ? " found" : "") + '"><div class="mi">' + (found ? "◆" : "◇") + " " + s.id + "</div>" +
@@ -2578,6 +2604,223 @@
   function openCards() {
     record("E19");
     openOverlay("full", renderCards(), { label: "Museum placards" });
+  }
+
+  /* ───────────── TTY-7: the node (E31) ─────────────
+     The hardest door in the record. It opens only after a perfect
+     run (all three chain keys) and asks for the word the seized
+     drive spelled in frequencies. Everything it prints is sourced
+     in the article; nothing here is operational. */
+  var TTY_FILES = {
+    "exhibit-a01.txt": "THE QUESTION THAT CAUGHT HIM\nMarch 16, 2013 — posted under a real name; renamed 'frosty' about a minute later.\nThe server code matched the pasted snippet. The question is still online.",
+    "hansa.log": "Hansa — June 20 to July 20, 2017.\n27,000 transactions surveilled. A planted spreadsheet exposed 64 sellers.\nCorrection on file: it was never '27,000 IPs'.",
+    "drive-noise.wav": "RECOVERED AUDIO — 3.0 seconds.\nThe spectrogram is the only way to see it.\nThe word you already used has opened this door once.",
+    "welcome-video.ledger": "IRS-CI traced payments on a public ledger.\nThe server IP sat in the site's own source code.\n337 arrests across 12 countries; 23 children rescued.",
+    "playpen.nit": "NIT — Feb 20 to Mar 4, 2015.\nReturned IPs, OS usernames, MAC addresses.\nCourts split over Rule 41; the rule was amended in 2016.",
+    "giraffe.cve": "CVE-2013-1680 — use-after-free, Firefox 17 ESR.\nA maintenance page beaconed IPs to Virginia. No Tor break.\nMarques: 27 years, 2021.",
+    "statement-2016.txt": "\"The Tor Project has never received a legal demand to place a backdoor in its programs or source code.\"\nhttps://blog.torproject.org/statement-tor-project-software-integrity-and-apple",
+    "readme.txt": "This node is a museum, not a market.\nNothing here is for sale. Everything here is footnoted."
+  };
+  var TTY_HELP = [
+    "node index:",
+    "  help                  this index",
+    "  ls                    list recovered artifacts",
+    "  cat <artifact>        print a recovered artifact",
+    "  replay 2013|2017      the documented chains, as logged",
+    "  trace                 the ledger, documented labels",
+    "  nodes                 relay roles, from the design paper",
+    "  decrypt <text>        run the cipher stack",
+    "  status                your record",
+    "  clear                 clear the screen",
+    "  exit                  close the session",
+    "unlisted words are also unlisted."
+  ];
+  var ttyHistory = [], ttyHistIdx = -1, ttyAttempts = 0, ttyUnknown = 0, ttyBootToken = 0;
+
+  function ttyPrint(cls, text) {
+    var body = $("#tty-body");
+    if (!body) return;
+    var div = doc.createElement("div");
+    div.className = "ttyline" + (cls ? " " + cls : "");
+    div.textContent = text;
+    body.appendChild(div);
+    body.scrollTop = body.scrollHeight;
+  }
+  function ttySetPrompt(p) { var el = $("#tty-prompt"); if (el) el.textContent = p; }
+  function ttySession() {
+    ttyPrint("sys", "welcome, curator.");
+    ttyPrint("dim", "fragments " + fragmentCount() + "/7 · keys " + state.keys.length + "/3 · records " + state.found.length + "/" + SECRETS.length);
+    ttyPrint("", "type 'help' for the node index.");
+    ttySetPrompt("curator@tty7:~$");
+  }
+  function ttyAuthFlow(v) {
+    ttyPrint("dim", "auth: " + v);
+    var norm = v.trim().toUpperCase().replace(/[^A-Z]/g, "");
+    if (norm === "RENDEZVOUS") {
+      state.flags.tty = true; save();
+      record("E31");
+      ttyPrint("sys", "AUTH OK — the node remembers you now.");
+      ttyPrint("", "");
+      ttySession();
+    } else {
+      ttyAttempts++;
+      ttyPrint("err", "AUTH FAILED (" + ttyAttempts + "/3).");
+      if (ttyAttempts >= 3) ttyPrint("dim", "hint: the seized drive spelled the word in frequencies.");
+    }
+  }
+  function ttyExec(raw) {
+    var cmd = raw.trim();
+    if (!cmd) return;
+    ttyPrint("dim", "curator@tty7:~$ " + cmd);
+    var parts = cmd.split(/\s+/);
+    var c = parts[0].toLowerCase();
+    var rest = cmd.slice(parts[0].length).trim();
+    var arg = rest.toLowerCase();
+    if (c === "help") { TTY_HELP.forEach(function (l) { ttyPrint("", l); }); return; }
+    if (c === "ls") { Object.keys(TTY_FILES).forEach(function (f) { ttyPrint("", "  " + f); }); return; }
+    if (c === "cat") {
+      if (!arg) { ttyPrint("warn", "usage: cat <artifact> — try 'ls'."); return; }
+      var match = null;
+      Object.keys(TTY_FILES).forEach(function (f) { if (f === arg || f.indexOf(arg) === 0) match = f; });
+      if (!match) { ttyPrint("err", "no such artifact: " + arg); return; }
+      TTY_FILES[match].split("\n").forEach(function (l) { ttyPrint("sys", l); });
+      return;
+    }
+    if (c === "replay") {
+      if (arg.indexOf("2017") !== -1) {
+        ["[2017-06-20]  Dutch custody of Hansa begins",
+          "[2017-07-05]  AlphaBay seized · users flee",
+          "[2017-07-20]  the \u201csafe\u201d market revealed as police"].forEach(function (l) { ttyPrint("", l); });
+      } else if (arg.indexOf("2013") !== -1) {
+        ["[2013-03-16]  SO question posted · renamed 'frosty' ~60s later",
+          "[2013-10-01]  Glen Park library · the laptop was open",
+          "[2013-10-02]  seizure announced · 173,991 BTC documented",
+          "[today]       the ledger keeps counting — #crypto"].forEach(function (l) { ttyPrint("", l); });
+      } else {
+        ttyPrint("warn", "replay <year> — documented years: 2013, 2017.");
+      }
+      return;
+    }
+    if (c === "trace") {
+      ["SERVER-29655     29,655 BTC · server side (2013)",
+        "LAPTOP-144336    144,336 BTC · sold 2017 for $48,238,116",
+        "INDIVIDUAL-X     69,370 BTC · 2020 → up to $4.4B by 2024",
+        "TOTAL-173991     173,991 BTC · the documented 2013 total"].forEach(function (l) { ttyPrint("sys", l); });
+      return;
+    }
+    if (c === "nodes") {
+      ["guard       — knows your address, not your destination",
+        "middle      — knows only the hop before and after",
+        "exit        — knows the destination, not you",
+        "rendezvous  — the only shared fact",
+        "source: Tor design paper, USENIX 2004"].forEach(function (l) { ttyPrint("", l); });
+      return;
+    }
+    if (c === "decrypt") {
+      if (!rest) { ttyPrint("warn", "usage: decrypt <text>"); return; }
+      var r = decodeChain(rest);
+      ttyPrint("sys", "[" + r.method + "]");
+      ttyPrint("", r.result);
+      return;
+    }
+    if (c === "status") {
+      ttyPrint("", "fragments " + fragmentCount() + "/7 · keys " + state.keys.length + "/3 · records " + state.found.length + "/" + SECRETS.length);
+      CHAINS.forEach(function (ch) {
+        ttyPrint("dim", "  " + ch.name + " — " + ch.links.filter(has).length + "/" + ch.links.length + (state.keys.indexOf(ch.key) !== -1 ? "  [key " + ch.key + "]" : ""));
+      });
+      return;
+    }
+    if (c === "whoami") { ttyPrint("", "curator // access: perfect run // the node knows you found the quiet exhibits."); return; }
+    if (c === "clear") { var body = $("#tty-body"); if (body) body.innerHTML = ""; return; }
+    if (c === "exit") { closeOverlay(); return; }
+    if (c === "sudo") { ttyPrint("err", "nothing to escalate to. this is a record, not a system."); return; }
+    if (c === "rm") { ttyPrint("warn", "the record cannot be deleted. that is the point. (myth B09)"); return; }
+    if (c === "onion") {
+      ["    ____", "   /    \\", "  | o  o |", "  |  __  |", "   \\____/", "each hop peels one layer."].forEach(function (l) { ttyPrint("sys", l); });
+      return;
+    }
+    if (c === "3301") { ttyPrint("", "cicada returned on 01-04, as it always did. the record keeps the date — and keeps its distance: unverifiable provenance is how puzzles curdle."); return; }
+    if (c === "credits") { ttyPrint("", "court filings · DOJ releases · academic papers · reporting. all cited inline. this node adds nothing but the room."); return; }
+    ttyUnknown++;
+    ttyPrint("err", "command not indexed: " + parts[0]);
+    if (ttyUnknown >= 4) ttyPrint("dim", "unlisted words are also unlisted. try 'onion'.");
+  }
+  function mountTTY(root) {
+    var body = $("#tty-body", root), input = $("#tty-in", root);
+    if (!body || !input) return;
+    var myBoot = ++ttyBootToken;
+    ttyHistory = []; ttyHistIdx = -1; ttyAttempts = 0; ttyUnknown = 0;
+    var authed = !!state.flags.tty;
+    var boot = [
+      ["sys", "SAURON NODE // TTY-7 // offline since 2013-10-02"],
+      ["dim", "[ok] guard relay    2f4a:88c1:9d02"],
+      ["dim", "[ok] middle relay   8b3d:44ee:02aa"],
+      ["dim", "[ok] exit relay     51e0:7d3f:c9b4"],
+      ["sys", "[ok] rendezvous point established — the meeting point is the only shared fact"],
+      ["dim", "·· nothing here is for sale · everything here is footnoted ··"]
+    ];
+    var step = reduced ? 0 : 300;
+    boot.forEach(function (l, i) {
+      setTimeout(function () {
+        if (myBoot !== ttyBootToken) return;
+        ttyPrint(l[0], l[1]);
+      }, i * step + 120);
+    });
+    setTimeout(function () {
+      if (myBoot !== ttyBootToken) return;
+      ttyPrint("", "");
+      if (authed) { ttySession(); }
+      else { ttyPrint("warn", "AUTH REQUIRED — enter passphrase:"); ttySetPrompt("auth:"); }
+      input.focus();
+    }, boot.length * step + 240);
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        var v = input.value;
+        input.value = "";
+        if (!v.trim()) return;
+        ttyHistory.push(v); ttyHistIdx = ttyHistory.length;
+        if (!state.flags.tty) ttyAuthFlow(v); else ttyExec(v);
+        return;
+      }
+      if (e.key === "ArrowUp") {
+        e.preventDefault();
+        if (ttyHistIdx > 0) { ttyHistIdx--; input.value = ttyHistory[ttyHistIdx] || ""; }
+        return;
+      }
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        if (ttyHistIdx < ttyHistory.length - 1) { ttyHistIdx++; input.value = ttyHistory[ttyHistIdx] || ""; }
+        else { ttyHistIdx = ttyHistory.length; input.value = ""; }
+      }
+    });
+    root.addEventListener("click", function () { input.focus(); });
+    setTimeout(function () { if (myBoot === ttyBootToken) input.focus(); }, 80);
+  }
+  function ttyLocked() {
+    var html = '<div class="ttywin"><div class="ttybar">' +
+      '<span class="d" style="background:#f43f5e"></span><span class="d" style="background:#f59e0b"></span><span class="d" style="background:#10b981"></span>' +
+      '<span style="margin-left:6px">TTY-7 · NO CARRIER</span></div><div class="ttybody">' +
+      '<div class="ttyline err">NO CARRIER</div>' +
+      '<div class="ttyline dim">this line answers only after a perfect run — three chain keys.</div>' +
+      '<div class="ttyline dim">you carry ' + state.keys.length + '/3. the record keeps its own order.</div>' +
+      '<div class="ttyline sys">·</div></div></div>';
+    openOverlay("full", html, { label: "TTY-7 — no carrier" });
+  }
+  function connect() {
+    if (state.keys.length < 3) {
+      console.log("%ctty-7 // NO CARRIER — three keys required. You carry " + state.keys.length + "/3.", "color:#f43f5e");
+      ttyLocked();
+      return;
+    }
+    openTerminal();
+  }
+  function openTerminal() {
+    openOverlay("full", '<div class="ttywin">' +
+      '<div class="ttybar"><span class="d" style="background:#f43f5e"></span><span class="d" style="background:#f59e0b"></span><span class="d" style="background:#10b981"></span><span style="margin-left:6px">TTY-7 · SAURON MUSEUM NODE · OFFLINE SINCE 2013</span></div>' +
+      '<div class="ttybody" id="tty-body" aria-live="polite"></div>' +
+      '<div class="ttyrow"><span class="p" id="tty-prompt">auth:</span><input id="tty-in" autocomplete="off" spellcheck="false" aria-label="Terminal input"></div>' +
+      "</div>", { label: "TTY-7 — the node", after: mountTTY });
   }
 
   /* ───────────── console API ───────────── */
@@ -2624,6 +2867,7 @@
     ledger: function () { discover("E15"); return "ledger terminal opened"; },
     route: function (name) { location.hash = String(name || "rv").replace("#", ""); return "routing"; },
     meta: function () { openMeta(); return "meta opened"; },
+    connect: function () { connect(); return "knocking…"; },
     reset: function () { resetState(); return "state cleared — reloading"; },
     curator: function () {
       SECRETS.forEach(function (s) { if (!has(s.id)) record(s.id); });
@@ -2653,6 +2897,7 @@
     toast: toast, banner: banner, hideBanner: hideBanner,
     overlay: openOverlay, closeOverlay: closeOverlay, openRecord: openRecord,
     openLayers: openLayers, openVault: openVault, openMeta: openMeta, openCards: openCards,
+    openTerminal: openTerminal, connect: connect,
     updateHUD: updateHUD,
     byId: byId, SECRETS: SECRETS, CARDS: CARDS, YEAR_CARDS: YEAR_CARDS,
     FRAGMENTS: FRAGMENTS, CHAINS: CHAINS,
@@ -2758,13 +3003,14 @@
     var t = e.target;
     if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
     var k = e.key;
-    if (k && k.length === 1 && /[a-z]/i.test(k)) { buf = (buf + k.toLowerCase()).slice(-40); }
+    if (k && k.length === 1 && /[a-z0-9]/i.test(k)) { buf = (buf + k.toLowerCase()).slice(-40); }
     else if (k === "Shift") { return; }
     else { buf = ""; }
     if (buf.endsWith("egotisticalgiraffe")) { buf = ""; S.discover("E23"); }
     else if (buf.endsWith("shishkabobs")) { buf = ""; S.discover("E22"); }
     else if (buf.endsWith("frosty")) { buf = ""; S.discover("E11"); }
     else if (buf.endsWith("garlic")) { buf = ""; S.discover("E28"); }
+    else if (buf.endsWith("tty7")) { buf = ""; if (S.connect) S.connect(); }
     else if (buf.endsWith("onion")) { buf = ""; onionStage(); }
   });
   function onionStage() {
@@ -2990,6 +3236,7 @@
     if (h === "rv") S.openRecord("E21");
     else if (h === "vault") S.openVault();
     else if (h === "secrets") S.openMeta();
+    else if (h === "terminal") { if (S.connect) S.connect(); }
   }
   win.addEventListener("hashchange", handleHash);
   if (win.location.hash) setTimeout(handleHash, 140);

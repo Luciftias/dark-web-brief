@@ -1,5 +1,3 @@
-![The Dark Web Banner](assets/banner.png)
-
 # The Dark Web — An Evidence-Based Technical Investigation
 
 <div align="center">
